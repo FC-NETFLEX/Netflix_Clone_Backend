@@ -7,6 +7,8 @@ RUN         mkdir /var/log/gunicorn
 RUN         mkdir /root/.aws
 COPY        requirements.txt /srv/Netflex_Clone_Backend/
 RUN         pip install -r /srv/Netflex_Clone_Backend/requirements.txt
+COPY        .config/netflex.nginx /etc/nginx/sites-enabled/
+
 
 COPY         . /srv/Netflex_Clone_Backend
 WORKDIR      /srv/Netflex_Clone_Backend/app
