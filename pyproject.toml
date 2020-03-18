@@ -13,6 +13,8 @@ boto3 = "^1.12.22"
 django-storages = "^1.9.1"
 psycopg2-binary = "^2.8.4"
 supervisor = "^4.1.0"
+django-credit-cards = "^0.4.1"
+Pillow = "^7.0.0"
 
 [tool.poetry.dev-dependencies]
 
