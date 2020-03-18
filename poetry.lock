@@ -163,6 +163,17 @@ version = "0.3.1"
 
 [[package]]
 category = "main"
+description = "A system for controlling process state under UNIX"
+name = "supervisor"
+optional = false
+python-versions = "*"
+version = "4.1.0"
+
+[package.extras]
+testing = ["mock", "pytest", "pytest-cov"]
+
+[[package]]
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 marker = "python_version != \"3.4\""
 name = "urllib3"
@@ -176,7 +187,7 @@ secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "cer
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [metadata]
-content-hash = "aca8b0bcbd58339f13acbf3006c4f4686a2b998d0f321303eb851f888d0758e0"
+content-hash = "c573c2410e1588bd7e8db44807f53b761520b21fe77b78b1374ce86c63d19986"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -266,6 +277,10 @@ six = [
 sqlparse = [
     {file = "sqlparse-0.3.1-py2.py3-none-any.whl", hash = "sha256:022fb9c87b524d1f7862b3037e541f68597a730a8843245c349fc93e1643dc4e"},
     {file = "sqlparse-0.3.1.tar.gz", hash = "sha256:e162203737712307dfe78860cc56c8da8a852ab2ee33750e33aeadf38d12c548"},
+]
+supervisor = [
+    {file = "supervisor-4.1.0-py2.py3-none-any.whl", hash = "sha256:a76b2f77a560f2dc411c0254a4eb15f555e99faac48621b0f1fc9ab013944f47"},
+    {file = "supervisor-4.1.0.tar.gz", hash = "sha256:2dc86fe0476e945e61483d614ceb2cf4f93b95282eb243bdf792621994360383"},
 ]
 urllib3 = [
     {file = "urllib3-1.25.8-py2.py3-none-any.whl", hash = "sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc"},
