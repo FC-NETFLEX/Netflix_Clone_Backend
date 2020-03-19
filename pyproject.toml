@@ -17,6 +17,8 @@ django-credit-cards = "^0.4.1"
 Pillow = "^7.0.0"
 
 [tool.poetry.dev-dependencies]
+notebook = "^6.0.3"
+django-extensions = "^2.2.8"
 
 [build-system]
 requires = ["poetry>=0.12"]
