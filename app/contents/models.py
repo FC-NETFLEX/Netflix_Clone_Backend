@@ -3,8 +3,9 @@ from django.db import models
 
 class Content(models.Model):
     summary = models.CharField(max_length=150, blank=True)
-    thumbnail = models.ImageField(blank=True)
-    title = models.CharField(max_length=150, blank=True)
+    thumbnail = models.ImageField()
+    title = models.CharField(max_length=150)
+    categories = models.ManyToManyField('Category')
 
 
 class Video(models.Model):
@@ -15,8 +16,17 @@ class Video(models.Model):
 
 
 class Actor(models.Model):
-    name = models.CharField(max_length=150, blank=True)
+    name = models.CharField(max_length=150)
 
 
 class Director(models.Model):
-    name = models.CharField(max_length=150, blank=True)
+    name = models.CharField(max_length=150)
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=150)
+    sub_categories = models.ManyToManyField('SubCategory')
+
+
+class SubCategory(models.Model):
+    name = models.CharField(max_length=150)
