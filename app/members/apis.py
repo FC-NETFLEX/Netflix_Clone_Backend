@@ -7,11 +7,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.models import User
-from members.serializers import UserSerializer
 
 
 # 사용자로그인 > 아이디,비밀번호,이메일 전달 > 유효성검사후토큰반환
 # 로그인
+from members.serializers import UserCreateSerializer
+
+
 class AuthTokenAPIView(APIView):
     def POST(self, request):
         email = request.data['email']
@@ -23,7 +25,7 @@ class AuthTokenAPIView(APIView):
         else:
             raise AuthenticationFailed()
 
-        serializer = UserSerializer(user)
+        serializer = UserCreateSerializer(user)
         data = {
             'token': token.key,
             'user': serializer.data
@@ -45,7 +47,7 @@ class LogoutAPIView(APIView):
 # 회원가입
 class CreateUserAPIView(APIView):
     def POST(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             data = {
