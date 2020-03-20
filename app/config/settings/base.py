@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-import os
 import json
+import os
+
 import boto3
 
 session = boto3.Session(profile_name="netflex-secrets-manager")
@@ -39,9 +40,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRETS['DJANGO_SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -53,7 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
     'contents.apps.ContentsConfig',
     'members.apps.MembersConfig',
     'rest_framework.authtoken',
@@ -92,8 +89,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
