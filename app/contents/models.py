@@ -2,31 +2,28 @@ from django.db import models
 
 
 class Content(models.Model):
-    summary = models.CharField(max_length=150, blank=True)
-    thumbnail = models.ImageField()
     title = models.CharField(max_length=150)
-    categories = models.ManyToManyField('Category')
+    summary = models.CharField(max_length=150, blank=True)
+    thumbnail = models.ImageField(blank=True)
+    is_movie = models.BooleanField(default=False)
 
 
 class Video(models.Model):
     season = models.CharField(max_length=150, blank=True)
-    episode = models.CharField(max_length=150, blank=True)
+    episode = models.CharField(max_length=150)
     summary = models.CharField(max_length=150, blank=True)
     url = models.URLField(max_length=200)
-
-
-class Actor(models.Model):
-    name = models.CharField(max_length=150)
-
-
-class Director(models.Model):
-    name = models.CharField(max_length=150)
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=150)
-    sub_categories = models.ManyToManyField('SubCategory')
+    content = models.ForeignKey('contents.Content',
+                                on_delete=models.CASCADE,
+                                related_name='video',
+                                verbose_name='컨텐츠',
+                                null=True)
 
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=150)
+    content = models.ForeignKey('contents.Content',
+                                on_delete=models.CASCADE,
+                                related_name='subcategories',
+                                verbose_name='카테고리',
+                                null=True)
