@@ -44,7 +44,7 @@ class Profile(models.Model):
                              null=True
                              )
     name = models.CharField('이름', max_length=150)
-    image = models.ImageField('프로필이미지', blank=True)
+    image_url = models.URLField('프로필이미지', blank=True)
     is_kids = models.BooleanField('키즈', default=False)
     created = models.DateTimeField('생성일자', default=timezone.now)
     watching_videos = models.ManyToManyField('contents.Video',
