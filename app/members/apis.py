@@ -5,8 +5,9 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from members.models import User
-from members.serializers import UserCreateSerializer, UserDetailSerializer
+from members.models import User, Profile
+from members.serializers import UserCreateSerializer, UserDetailSerializer, ProfileDetailSerializer, \
+    ProfileCreateSerializer
 
 
 # 로그인
@@ -41,3 +42,22 @@ class CreateUserView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = serializer.save()
         token, _ = Token.objects.get_or_create(user=user)
+
+
+# profile 생성, profile list 처리
+class ProfileListCreateView(generics.ListCreateAPIView):
+
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.filter(user=user)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ProfileDetailSerializer
+        return ProfileCreateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+
