@@ -50,6 +50,9 @@ class Profile(models.Model):
     watching_videos = models.ManyToManyField('contents.Video',
                                              verbose_name='재생 중인 비디오',
                                              related_name='profiles')
+    select_contents = models.ManyToManyField('contents.Content',
+                                             verbose_name='찜한 컨텐츠',
+                                             related_name='profiles')
 
     def __str__(self):
         return f'{self.user.email} : {self.name}'
