@@ -20,6 +20,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('이메일', max_length=128, unique=True)
+    # phone_number = models.CharField('전화번호', max_length=12, unique=True, blank=True)
     password = models.CharField('비밀번호', max_length=128)
     created = models.DateTimeField('생성일자', default=timezone.now)
 
@@ -37,22 +38,35 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
-    user = models.ForeignKey(User,
+    user = models.ForeignKey('members.User',
                              on_delete=models.CASCADE,
                              verbose_name='프로필',
-                             related_name='profile',
+                             related_name='profiles',
                              null=True
                              )
-    name = models.CharField('이름', max_length=150)
-    image_url = models.URLField('프로필이미지', blank=True)
+    profile_name = models.CharField('이름', max_length=150)
+    profile_image = models.URLField('프로필이미지', blank=True)
     is_kids = models.BooleanField('키즈', default=False)
     created = models.DateTimeField('생성일자', default=timezone.now)
     watching_videos = models.ManyToManyField('contents.Video',
+                                             through='members.Watching',
                                              verbose_name='재생 중인 비디오',
                                              related_name='profiles')
-    select_contents = models.ManyToManyField('contents.Content',
+    select_contents = models.ManyToManyField('contents.Contents',
                                              verbose_name='찜한 컨텐츠',
                                              related_name='profiles')
 
     def __str__(self):
-        return f'{self.user.email} : {self.name}'
+        return f'{self.user.email} : {self.profile_name}'
+
+
+class Watching(models.Model):
+    video = models.ForeignKey('contents.Video',
+                              on_delete=models.CASCADE,
+                              verbose_name='비디오',
+                              related_name='watching')
+    profile = models.ForeignKey('members.Profile',
+                                on_delete=models.CASCADE,
+                                verbose_name='프로필',
+                                related_name='watching')
+    playtime = models.CharField('재생시간', max_length=10)

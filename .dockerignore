@@ -2,3 +2,4 @@
 /poetry.lock
 /pyproject.toml
 /.gitignore
+/app/notebook_test
