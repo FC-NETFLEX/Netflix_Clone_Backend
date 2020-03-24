@@ -15,6 +15,8 @@ psycopg2-binary = "^2.8.4"
 supervisor = "^4.1.0"
 django-credit-cards = "^0.4.1"
 Pillow = "^7.0.0"
+bs4 = "^0.0.1"
+requests = "^2.23.0"
 
 [tool.poetry.dev-dependencies]
 notebook = "^6.0.3"
