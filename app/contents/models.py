@@ -29,7 +29,7 @@ class Video(models.Model):
     video_summary = models.CharField(max_length=150, blank=True)
     # 영상 주소
     video_url = models.URLField(max_length=200)
-    content = models.ForeignKey('contents.Contents',
+    contents = models.ForeignKey('contents.Contents',
                                 on_delete=models.CASCADE,
                                 related_name='videos',
                                 verbose_name='컨텐츠',
@@ -38,7 +38,7 @@ class Video(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=150)
-    content = models.ForeignKey('contents.Contents',
+    contents = models.ForeignKey('contents.Contents',
                                 on_delete=models.CASCADE,
                                 related_name='categories',
                                 verbose_name='카테고리',
