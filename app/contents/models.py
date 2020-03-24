@@ -16,6 +16,14 @@ class Contents(models.Model):
     contents_image = models.ImageField(blank=True)
     # contents 등급
     contents_rating = models.IntegerField(choices=CONTENTS_RATING, default=0)
+    # contents의 배우
+    actors = models.ManyToManyField('contents.Actor',
+                                    related_name='contents',
+                                    verbose_name='출연 배우')
+    # contents 감독
+    directors = models.ManyToManyField('contents.Director',
+                                       related_name='contents',
+                                       verbose_name='감독')
     # contents 타입
     is_movie = models.BooleanField(default=True)
 
@@ -30,16 +38,24 @@ class Video(models.Model):
     # 영상 주소
     video_url = models.URLField(max_length=200)
     contents = models.ForeignKey('contents.Contents',
-                                on_delete=models.CASCADE,
-                                related_name='videos',
-                                verbose_name='컨텐츠',
-                                null=True)
+                                 on_delete=models.CASCADE,
+                                 related_name='videos',
+                                 verbose_name='컨텐츠',
+                                 null=True)
 
 
 class Category(models.Model):
     category_name = models.CharField(max_length=150)
     contents = models.ForeignKey('contents.Contents',
-                                on_delete=models.CASCADE,
-                                related_name='categories',
-                                verbose_name='카테고리',
-                                null=True)
+                                 on_delete=models.CASCADE,
+                                 related_name='categories',
+                                 verbose_name='카테고리',
+                                 null=True)
+
+
+class Actor(models.Model):
+    actor_name = models.CharField(max_length=50)
+
+
+class Director(models.Model):
+    director_name = models.CharField(max_length=50)
