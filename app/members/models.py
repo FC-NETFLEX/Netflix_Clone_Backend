@@ -45,7 +45,6 @@ class Profile(models.Model):
                              null=True
                              )
     profile_name = models.CharField('이름', max_length=150)
-    profile_image = models.URLField('프로필이미지', blank=True)
     is_kids = models.BooleanField('키즈', default=False)
     created = models.DateTimeField('생성일자', default=timezone.now)
     watching_videos = models.ManyToManyField('contents.Video',
@@ -55,9 +54,19 @@ class Profile(models.Model):
     select_contents = models.ManyToManyField('contents.Contents',
                                              verbose_name='찜한 컨텐츠',
                                              related_name='profiles')
+    profile_icon = models.ForeignKey('members.ProfileIcon',
+                                     verbose_name='프로필 이미지',
+                                     related_name='profiles',
+                                     default='',
+                                     on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user.email} : {self.profile_name}'
+
+
+class ProfileIcon(models.Model):
+    icon_url = models.URLField()
+    icon_type = models.CharField(max_length=64)
 
 
 class Watching(models.Model):
