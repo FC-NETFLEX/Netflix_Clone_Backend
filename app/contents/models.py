@@ -8,34 +8,28 @@ class Contents(models.Model):
         (15, '15세이용가'),
         (18, '청소년이용불가'),
     )
-    # contents 제목
     contents_title = models.CharField(max_length=150)
-    # contents 줄거리
     contents_summary = models.TextField(blank=True)
-    # contents 메인 이미지
     contents_image = models.ImageField(blank=True)
-    # contents 등급
+    contents_logo = models.ImageField(blank=True)
     contents_rating = models.IntegerField(choices=CONTENTS_RATING, default=0)
-    # contents의 배우
+    contents_length = models.CharField(max_length=64, blank=True)
+    contents_pub_year = models.CharField(max_length=8, blank=True)
+    is_movie = models.BooleanField(default=True)
+
     actors = models.ManyToManyField('contents.Actor',
                                     related_name='contents',
                                     verbose_name='출연 배우')
-    # contents 감독
+
     directors = models.ManyToManyField('contents.Director',
                                        related_name='contents',
                                        verbose_name='감독')
-    # contents 타입
-    is_movie = models.BooleanField(default=True)
 
 
 class Video(models.Model):
-    # 시즌 정보    ex)시즌 1, 시즌 2
     video_season = models.CharField(max_length=150, blank=True)
-    # 제목        ex) 1화, 2화  -> 꼭 이런 제목이 아닐 수도 있다.
     video_title = models.CharField(max_length=150)
-    # 줄거리
     video_summary = models.CharField(max_length=150, blank=True)
-    # 영상 주소
     video_url = models.URLField(max_length=200)
     contents = models.ForeignKey('contents.Contents',
                                  on_delete=models.CASCADE,

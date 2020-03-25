@@ -23,12 +23,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    profile = serializers.PrimaryKeyRelatedField(many=True, queryset=Profile.objects.all())
+    profiles = serializers.PrimaryKeyRelatedField(many=True, queryset=Profile.objects.all())
     token = serializers.PrimaryKeyRelatedField(source='auth_token', queryset=Token.objects.all())
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'token', 'profile']
+        fields = ['id', 'email', 'token', 'profiles']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
