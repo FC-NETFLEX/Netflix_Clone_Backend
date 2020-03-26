@@ -27,6 +27,16 @@ secretsManager = session.client(
 
 SECRETS = json.loads(secretsManager.get_secret_value(SecretId='netflex')["SecretString"])['netflex']
 
+sentry_sdk.init(
+    dsn=SECRETS['dsn'],
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+
+
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SECRETS['AWS_SECRET_ACCESS_KEY']
