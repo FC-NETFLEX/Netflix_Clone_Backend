@@ -25,10 +25,9 @@ SECRETS = json.loads(secretsManager.get_secret_value(SecretId='netflex')["Secret
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SECRETS['AWS_SECRET_ACCESS_KEY']
-AWS_STORAGE_BUCKET_NAME = "netflex"
-AWS_AUTO_CREATE_BUCKET = True
+AWS_STORAGE_BUCKET_NAME = "fc-netflex"
 AWS_S3_REGION_NAME = 'ap-northeast-2'
-
+AWS_DEFAULT_ACL = None
 AUTH_USER_MODEL = 'members.User'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -54,6 +53,7 @@ INSTALLED_APPS = [
     'members.apps.MembersConfig',
     'contents.apps.ContentsConfig',
     'rest_framework.authtoken',
+    'storages',
 ]
 
 MIDDLEWARE = [

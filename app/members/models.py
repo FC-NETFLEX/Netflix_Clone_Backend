@@ -20,7 +20,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('이메일', max_length=128, unique=True)
-    # phone_number = models.CharField('전화번호', max_length=12, unique=True, blank=True)
     password = models.CharField('비밀번호', max_length=128)
     created = models.DateTimeField('생성일자', default=timezone.now)
 
@@ -50,14 +49,17 @@ class Profile(models.Model):
     watching_videos = models.ManyToManyField('contents.Video',
                                              through='members.Watching',
                                              verbose_name='재생 중인 비디오',
-                                             related_name='profiles')
+                                             related_name='profiles',
+                                             )
+
     select_contents = models.ManyToManyField('contents.Contents',
                                              verbose_name='찜한 컨텐츠',
-                                             related_name='profiles')
+                                             related_name='profiles',
+                                             )
+
     profile_icon = models.ForeignKey('members.ProfileIcon',
                                      verbose_name='프로필 이미지',
                                      related_name='profiles',
-                                     default='',
                                      on_delete=models.CASCADE)
 
     def __str__(self):
@@ -65,8 +67,9 @@ class Profile(models.Model):
 
 
 class ProfileIcon(models.Model):
-    icon_url = models.URLField()
-    icon_type = models.CharField(max_length=64)
+    icon_name = models.CharField('아이콘 이름', max_length=128)
+    icon = models.ImageField('아이콘', upload_to='profile/icon/')
+    icon_type = models.CharField('아이콘 타입', max_length=64)
 
 
 class Watching(models.Model):
@@ -78,4 +81,4 @@ class Watching(models.Model):
                                 on_delete=models.CASCADE,
                                 verbose_name='프로필',
                                 related_name='watching')
-    playtime = models.CharField('재생시간', max_length=10)
+    playtime = models.PositiveIntegerField('재생시간')

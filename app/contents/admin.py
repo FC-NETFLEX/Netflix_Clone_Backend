@@ -1,17 +1,21 @@
 from django.contrib import admin
+
+from contents.models import Contents, Video, Category
+
+
 # Register your models here.
-from django.contrib.auth import get_user_model
-
-from members.models import Profile
-
-User = get_user_model()
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(Contents)
+class ContentAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
     pass
