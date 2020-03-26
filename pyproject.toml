@@ -21,6 +21,7 @@ requests = "^2.23.0"
 [tool.poetry.dev-dependencies]
 notebook = "^6.0.3"
 django-extensions = "^2.2.8"
+django-debug-toolbar = "^2.2"
 
 [build-system]
 requires = ["poetry>=0.12"]

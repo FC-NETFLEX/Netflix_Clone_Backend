@@ -13,6 +13,11 @@ import json
 import os
 
 import boto3
+import sentry_sdk
+
+# sentry 설정
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 session = boto3.Session(profile_name="netflex-secrets-manager")
 secretsManager = session.client(
@@ -52,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'members.apps.MembersConfig',
     'contents.apps.ContentsConfig',
+    'rest_framework',
     'rest_framework.authtoken',
     'storages',
 ]

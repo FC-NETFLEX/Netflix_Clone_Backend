@@ -167,6 +167,18 @@ django = ">=1.8"
 
 [[package]]
 category = "dev"
+description = "A configurable set of panels that display various debug information about the current request/response."
+name = "django-debug-toolbar"
+optional = false
+python-versions = ">=3.5"
+version = "2.2"
+
+[package.dependencies]
+Django = ">=1.11"
+sqlparse = ">=0.2.0"
+
+[[package]]
+category = "dev"
 description = "Extensions for Django"
 name = "django-extensions"
 optional = false
@@ -810,7 +822,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "8d616de3c74edaf1778c5a6a7d446004e8a382deb41fe7f97f61649c34ef2b27"
+content-hash = "ecbbbd1f97c060af60d434373721233b67f0637dec6e34c536241c44a098eb00"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -873,6 +885,10 @@ django = [
 django-credit-cards = [
     {file = "django-credit-cards-0.4.1.tar.gz", hash = "sha256:e9c51399b718375cbddee18c13559de154c8de1b1cae4ae9e5db29d5df258bff"},
     {file = "django_credit_cards-0.4.1-py2.py3-none-any.whl", hash = "sha256:63f651070d556689d57907d49a5fd6a12df698db303665c0daebdcefc34abe96"},
+]
+django-debug-toolbar = [
+    {file = "django-debug-toolbar-2.2.tar.gz", hash = "sha256:eabbefe89881bbe4ca7c980ff102e3c35c8e8ad6eb725041f538988f2f39a943"},
+    {file = "django_debug_toolbar-2.2-py3-none-any.whl", hash = "sha256:ff94725e7aae74b133d0599b9bf89bd4eb8f5d2c964106e61d11750228c8774c"},
 ]
 django-extensions = [
     {file = "django-extensions-2.2.8.tar.gz", hash = "sha256:2699cc1d6fb4bd393c0b5832fea4bc685f2ace5800b3c9ff222b2080f161ac04"},
