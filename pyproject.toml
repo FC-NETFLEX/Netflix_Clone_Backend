@@ -17,6 +17,7 @@ Pillow = "^7.0.0"
 bs4 = "^0.0.1"
 requests = "^2.23.0"
 drf-yasg = "^1.17.1"
+python-magic = "^0.4.15"
 
 [tool.poetry.dev-dependencies]
 notebook = "^6.0.3"
