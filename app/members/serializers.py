@@ -34,16 +34,16 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['id', 'name', 'image_url', 'is_kids', 'watching_videos', 'select_contents']
+        fields = ['id', 'profile_name', 'profile_icon', 'is_kids', 'watching_videos', 'select_contents']
 
 
 class ProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['name', 'image_url', 'is_kids']
+        fields = ['profile_name', 'profile_icon', 'is_kids']
 
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['id', 'name', 'image_url', 'is_kids']
+        fields = ['id', 'profile_name', 'profile_icon', 'is_kids']
