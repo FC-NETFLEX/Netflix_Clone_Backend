@@ -54,8 +54,13 @@ class Profile(models.Model):
 
     select_contents = models.ManyToManyField('contents.Contents',
                                              verbose_name='찜한 컨텐츠',
-                                             related_name='profiles',
+                                             related_name='select_profile',
                                              )
+
+    like_contents = models.ManyToManyField('contents.Contents',
+                                           verbose_name='평가한 컨텐츠',
+                                           related_name='like_profiles',
+                                           )
 
     profile_icon = models.ForeignKey('members.ProfileIcon',
                                      verbose_name='프로필 이미지',
