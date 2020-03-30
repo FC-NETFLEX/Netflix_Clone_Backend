@@ -5,9 +5,9 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from members.models import User, Profile
-from members.serializers import UserCreateSerializer, UserDetailSerializer, ProfileDetailSerializer, \
-    ProfileCreateSerializer
+from members.models import User, Profile, ProfileIcon
+from members.serializers import UserCreateSerializer, UserDetailSerializer, ProfileCreateSerializer, ProfileSerializer, \
+    ProfileIconSerializer
 
 
 # 로그인
@@ -53,8 +53,15 @@ class ProfileListCreateView(generics.ListCreateAPIView):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return ProfileDetailSerializer
+            return ProfileSerializer
         return ProfileCreateSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+# profile icon 선택 창에 icon list를 보여줌
+
+class ProfileIconListView(generics.ListAPIView):
+    serializer_class = ProfileIconSerializer
+    queryset = ProfileIcon.objects.all()
