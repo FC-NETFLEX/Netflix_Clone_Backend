@@ -45,7 +45,7 @@ class CreateUserView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        token, _ = Token.objects.create(user=user)
+        Token.objects.create(user=user)
 
 
 # profile 생성, profile list 처리
