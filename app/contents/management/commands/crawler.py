@@ -1,13 +1,12 @@
 from urllib import parse
 from bs4 import BeautifulSoup
 import requests
-
+import magic
 
 def get_url():
-    base_url = 'https://movie.naver.com'
-    url = 'https://movie.naver.com/movie/sdb/rank/rmovie.nhn'
+    url = r'https://movie.naver.com/movie/sdb/rank/rmovie.nhn'
     req = requests.get(url)
-    soup = BeautifulSoup(req.text)
+    soup = BeautifulSoup(req.text, 'html.parser')
     url_list = []
 
     for movie_list in soup.select('div.tit3'):
@@ -16,22 +15,16 @@ def get_url():
 
 
 def get_item(movie_url):
-    title = []  # 타이틀
-    sub_title = []
-    genre = []  # 장르
-    pub_year = []  # 개봉연도
-    movie_length = []  # 상영시간
+    genre = []  # 장음르
+    pub_year = '정보없'  # 개봉연도
     actor = []  # 배우
-    rating = []  # 관람등급
     director = []  # 감독
-    image_url = []  # 포스터 url
-    summary = []  # 줄거리
 
     url = movie_url
-    soup = BeautifulSoup(requests.get(url).text)
-    title.append(soup.select_one('h3.h_movie').find('a').getText())  # 타이틀
+    soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+    title = soup.select_one('h3.h_movie').find('a').getText()  # 타이틀
     b_sub_title = soup.select_one('strong.h_movie2').getText()
-    sub_title.append(list(map(str.strip, b_sub_title.split(', ')))[0])  # 영어제목 / 서브타이틀
+    title_english = (list(map(str.strip, b_sub_title.split(', ')))[0])  # 서브타이틀 / 영어제목
     d1 = soup.select_one('dl.info_spec')
     s1 = d1.dt.findNextSibling('dd')
     temp = s1.find_all('a')
@@ -44,15 +37,15 @@ def get_item(movie_url):
         '26': '영화카툰', '27': '영화음악', '28': '영화패러디포스터'
     }
 
-    movie_length.append(temp2[2].getText().strip())  # 상영시간
+    movie_length = temp2[2].getText().strip()  # 상영시간
 
     for a in temp:
         p1 = parse.urlparse(a['href'])
         if 'genre' in p1[4]:
             genre.append(genre_dict[p1.query[6:]])  # 장르
 
-        if 'open' in p1[4] and not pub_year:
-            pub_year.append(p1[4][5:9])  # 개봉연도
+        if 'open' in p1[4]:
+            pub_year = p1[4][5:9]  # 개봉연도
 
     s2 = s1.findNextSibling('dd')
     s3 = s2.findNextSibling('dd')
@@ -60,18 +53,25 @@ def get_item(movie_url):
     director.append(s2.a.getText())  # 감독
     actor.append(s3.a.getText())  # 배우
     try:
-        rating.append(s4.a.getText())  # 관람등급
+        rating = s4.a.getText()  # 관람등급
     except AttributeError:
-        rating.append('전체 관람가')
-    image_url.append(soup.select_one('div.poster').find('a').img['src'])  # 포스터 url
+        rating = '전체 관람가'
+    image_url = soup.select_one('div.poster').find('a').img['src']  # 포스터 url
     summary_text = soup.select("div.obj_section > div.video > div.story_area > p.con_tx")
     if summary_text:
-        summary.append(summary_text[0].get_text(strip=True))  # 줄거리
+        summary = summary_text[0].get_text(strip=True)  # 줄거리
     else:
-        summary.append('')
-    movie_info = title + sub_title + genre + pub_year + movie_length + actor + rating + director + image_url + summary
-    print(movie_info)
+        summary = ''
+    return {
+        'title': title,
+        'title_english': title_english,
+        'genre': genre,
+        'pub_year': pub_year,
+        'length': movie_length,
+        'rating': rating,
+        'actor': actor,
+        'director': director,
+        'image_url': image_url,
+        'summary': summary
+    }
 
-
-for movie_url in get_url():
-    get_item(movie_url)
