@@ -34,6 +34,9 @@ class Video(models.Model):
                                  verbose_name='컨텐츠',
                                  null=True)
 
+    def __str__(self):
+        return self.video_url
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=150)
@@ -41,10 +44,19 @@ class Category(models.Model):
                                       related_name='categories',
                                       verbose_name='카테고리')
 
+    def __str__(self):
+        return self.category_name
+
 
 class Actor(models.Model):
     actor_name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.actor_name
+
 
 class Director(models.Model):
     director_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.director_name
