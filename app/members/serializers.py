@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 
 from members.models import User, Profile, ProfileIcon
 
@@ -43,10 +42,12 @@ class ProfileSerializer(serializers.ModelSerializer):
                   ]
 
 
-class ProfileCreateSerializer(serializers.ModelSerializer):
+class ProfileCreateUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
     class Meta:
         model = Profile
-        fields = ['profile_name',
+        fields = ['id',
+                  'profile_name',
                   'profile_icon',
                   'is_kids']
-

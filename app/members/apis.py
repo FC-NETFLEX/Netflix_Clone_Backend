@@ -1,13 +1,13 @@
 from django.contrib.auth import authenticate
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from members.models import User, Profile, ProfileIcon
-from members.serializers import UserCreateSerializer, UserDetailSerializer, ProfileIconSerializer, ProfileSerializer, \
-    ProfileCreateSerializer
+from members.serializers import UserCreateSerializer, ProfileIconSerializer, ProfileSerializer, \
+    ProfileCreateUpdateSerializer
 
 
 # 로그인
@@ -31,6 +31,8 @@ class AuthTokenAPIView(APIView):
 # 로그아웃하면 서버에서 삭제
 # 로그아웃
 class UserLogoutAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
@@ -48,6 +50,7 @@ class CreateUserView(generics.CreateAPIView):
 
 # profile 생성, profile list 처리
 class ProfileListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -56,14 +59,29 @@ class ProfileListCreateView(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return ProfileSerializer
-        return ProfileCreateSerializer
+        return ProfileCreateUpdateSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileCreateUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        profile = Profile.objects.get(pk=self.kwargs.get('pk'))
+        return profile
+
+    def perform_destroy(self, instance):
+        instance.watching_videos.clear()
+        instance.select_contents.clear()
+        super().perform_destroy(instance)
 
 
 # profile icon 선택 창에 icon list를 보여줌
 class ProfileIconListView(generics.ListAPIView):
     serializer_class = ProfileIconSerializer
     queryset = ProfileIcon.objects.all()
-
+    permission_classes = [permissions.IsAuthenticated]
