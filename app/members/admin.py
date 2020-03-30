@@ -20,10 +20,10 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(ProfileIcon)
 class ProfileIconAdmin(admin.ModelAdmin):
-    fields = ('icon', 'icon_name', 'icon_category')
+    fields = ('icon', 'icon_type')
     form = IconTypeChoiceForm
 
-    list_display = ('icon', 'icon_name', 'icon_category')
+    list_display = ('icon', 'icon_type')
 
 
 @admin.register(Watching)

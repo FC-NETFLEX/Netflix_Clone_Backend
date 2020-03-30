@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
-from members.models import User, Profile, ProfileIcon
+from members.models import User, Profile
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -12,42 +13,37 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+    def to_representation(self, instance):
+        token = Token.objects.get(user=instance)
+        return {
+            "id": instance.id,
+            "email": instance.email,
+            "token": token.key
+        }
+
 
 class UserDetailSerializer(serializers.ModelSerializer):
     profiles = serializers.PrimaryKeyRelatedField(many=True, queryset=Profile.objects.all())
+    token = serializers.PrimaryKeyRelatedField(source='auth_token', queryset=Token.objects.all())
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'profiles']
-
-
-class ProfileIconSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProfileIcon
-        fields = ['id',
-                  'icon_name',
-                  'icon',
-                  'icon_category']
+        fields = ['id', 'email', 'token', 'profiles']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    profile_icon = ProfileIconSerializer()
-
     class Meta:
         model = Profile
-        fields = ['id',
-                  'profile_name',
-                  'profile_icon',
-                  'is_kids',
-                  ]
+        fields = ['id', 'profile_name', 'profile_icon', 'is_kids', 'watching_videos', 'select_contents']
 
 
-class ProfileCreateUpdateSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
-
+class ProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['id',
-                  'profile_name',
-                  'profile_icon',
-                  'is_kids']
+        fields = ['profile_name', 'profile_icon', 'is_kids']
+
+
+class ProfileDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['id', 'profile_name', 'profile_icon', 'is_kids']
