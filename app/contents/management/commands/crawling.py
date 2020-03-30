@@ -1,6 +1,6 @@
-from bs4 import BeautifulSoup
-import requests
 from django.core.management.base import BaseCommand
+
+from contents.management.commands.crawler import get_url, get_item
 
 
 class Command(BaseCommand):
@@ -8,19 +8,7 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        response = requests.get('https://movie.naver.com/movie/sdb/rank/rmovie.nhn')
-        html = response.text
+        for movie_url in get_url():
+            get_item(movie_url)
 
-
-
-
-
-#타이틀
-# 이미지
-# 줄거리
-# 장르
-# 등급
-# 감독
-# 배우
-# 개봉연도
-# 영상시
+        return self.stdout.write('크롤링 완료')

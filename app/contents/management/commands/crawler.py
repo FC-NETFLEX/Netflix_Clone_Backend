@@ -1,30 +1,23 @@
 from urllib import parse
-
 from bs4 import BeautifulSoup
 import requests
-import urllib.request
-
-url_list = []
-title_list = []
-base_url = 'https://movie.naver.com'
-movie_url = []
-
-# base_url + url_list[0]
 
 
-# 네이버영화의 랭킹순위에서 각 영화들의 url을 가져옴
 def get_url():
+    base_url = 'https://movie.naver.com'
     url = 'https://movie.naver.com/movie/sdb/rank/rmovie.nhn'
     req = requests.get(url)
     soup = BeautifulSoup(req.text)
+    url_list = []
 
-    for title in soup.select('div.tit3'):
-        title_list.append(title.a.gettext().strip())
-        url_list.append(title.a['href'])
+    for movie_list in soup.select('div.tit3'):
+        url_list.append('https://movie.naver.com' + movie_list.a['href'])
+    return url_list
 
 
-def get_item():
+def get_item(movie_url):
     title = []  # 타이틀
+    sub_title = []
     genre = []  # 장르
     pub_year = []  # 개봉연도
     movie_length = []  # 상영시간
@@ -32,11 +25,13 @@ def get_item():
     rating = []  # 관람등급
     director = []  # 감독
     image_url = []  # 포스터 url
-    # 줄거리
+    summary = []  # 줄거리
 
-    url = base_url + url_list[0]
+    url = movie_url
     soup = BeautifulSoup(requests.get(url).text)
     title.append(soup.select_one('h3.h_movie').find('a').getText())  # 타이틀
+    b_sub_title = soup.select_one('strong.h_movie2').getText()
+    sub_title.append(list(map(str.strip, b_sub_title.split(', ')))[0])  # 영어제목 / 서브타이틀
     d1 = soup.select_one('dl.info_spec')
     s1 = d1.dt.findNextSibling('dd')
     temp = s1.find_all('a')
@@ -64,14 +59,19 @@ def get_item():
     s4 = s3.findNextSibling('dd')
     director.append(s2.a.getText())  # 감독
     actor.append(s3.a.getText())  # 배우
-    rating.append(s4.a.getText())  # 관람등급
+    try:
+        rating.append(s4.a.getText())  # 관람등급
+    except AttributeError:
+        rating.append('전체 관람가')
     image_url.append(soup.select_one('div.poster').find('a').img['src'])  # 포스터 url
+    summary_text = soup.select("div.obj_section > div.video > div.story_area > p.con_tx")
+    if summary_text:
+        summary.append(summary_text[0].get_text(strip=True))  # 줄거리
+    else:
+        summary.append('')
+    movie_info = title + sub_title + genre + pub_year + movie_length + actor + rating + director + image_url + summary
+    print(movie_info)
 
 
-"""
-    return : dict
-    {
-        'title': title,
-        'genre' : gendre
-    }
-"""
+for movie_url in get_url():
+    get_item(movie_url)
