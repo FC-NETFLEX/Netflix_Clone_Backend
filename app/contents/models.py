@@ -3,6 +3,7 @@ from django.db import models
 
 class Contents(models.Model):
     contents_title = models.CharField(max_length=150)
+    contents_title_english = models.CharField(max_length=150, blank=True)
     contents_summary = models.TextField(blank=True)
     contents_image = models.ImageField(upload_to='contents/image/', blank=True)
     contents_logo = models.ImageField(upload_to='contents/logo/', blank=True)
