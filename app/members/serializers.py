@@ -34,7 +34,10 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class ProfileIconSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileIcon
-        fields = ['id', 'icon_name', 'icon', 'icon_type']
+        fields = ['id',
+                  'icon_name',
+                  'icon',
+                  'icon_category']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -44,14 +47,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['id',
                   'profile_name',
+                  'profile_icon',
                   'is_kids',
-                  'profile_icon']
-
-
-class ProfileDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ['id', 'profile_name', 'profile_icon', 'is_kids', 'watching_videos', 'select_contents']
+                  ]
 
 
 class ProfileCreateSerializer(serializers.ModelSerializer):

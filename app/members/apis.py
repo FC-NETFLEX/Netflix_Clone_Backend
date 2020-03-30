@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from members.models import User, Profile, ProfileIcon
-from members.serializers import UserCreateSerializer, UserDetailSerializer, ProfileCreateSerializer, ProfileSerializer, \
-    ProfileIconSerializer
+from members.serializers import UserCreateSerializer, UserDetailSerializer, ProfileIconSerializer, ProfileSerializer, \
+    ProfileCreateSerializer
 
 
 # 로그인
@@ -49,7 +49,7 @@ class ProfileListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Profile.objects.filter(user=user)
+        return Profile.objects.filter(user=user).order_by('pk')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
