@@ -74,7 +74,7 @@ class Profile(models.Model):
 class ProfileIcon(models.Model):
     icon_name = models.CharField('아이콘 이름', max_length=128)
     icon = models.ImageField('아이콘', upload_to='profile/icon/')
-    icon_type = models.CharField('아이콘 타입', max_length=64)
+    icon_category = models.CharField('아이콘 타입', max_length=64)
 
 
 class Watching(models.Model):
