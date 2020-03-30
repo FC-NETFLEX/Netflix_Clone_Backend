@@ -11,7 +11,7 @@ from members.serializers import UserCreateSerializer, UserDetailSerializer, Prof
 
 
 # 로그인
-class UserLoginAPIView(APIView):
+class AuthTokenAPIView(APIView):
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
@@ -22,8 +22,10 @@ class UserLoginAPIView(APIView):
         else:
             raise AuthenticationFailed()
 
-        serializer = UserDetailSerializer(user)
-        return Response(serializer.data)
+        data = {
+            'token': token.key
+        }
+        return Response(data)
 
 
 # 로그아웃하면 서버에서 삭제
@@ -41,7 +43,7 @@ class CreateUserView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        token, _ = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.create(user=user)
 
 
 # profile 생성, profile list 처리
@@ -61,7 +63,7 @@ class ProfileListCreateView(generics.ListCreateAPIView):
 
 
 # profile icon 선택 창에 icon list를 보여줌
-
 class ProfileIconListView(generics.ListAPIView):
     serializer_class = ProfileIconSerializer
     queryset = ProfileIcon.objects.all()
+
