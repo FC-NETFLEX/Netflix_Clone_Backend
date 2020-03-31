@@ -19,6 +19,11 @@ requests = "^2.23.0"
 drf-yasg = "^1.17.1"
 python-magic = "^0.4.15"
 sentry-sdk = "^0.14.3"
+coverage = "^5.0.4"
+pytest = "^5.4.1"
+pytest-django = "^3.8.0"
+codecov = "^2.0.22"
+pytest-cov = "^2.8.1"
 
 [tool.poetry.dev-dependencies]
 notebook = "^6.0.3"
