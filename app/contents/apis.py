@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from contents.models import Contents
-from contents.serializers import ContentsDetailSerializer, ContentsSerializer
-from members.models import Profile
+from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer
+from members.models import Profile, Watching
 
 
 def get_ad_contents():
@@ -96,24 +96,28 @@ class ContentsSelectAPIView(APIView):
 #         return Response(data)
 class ContentsListView(APIView):
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, profile_pk):
         all_contents = Contents.objects.all()
         recommand_contents = all_contents.filter(contents_pub_year='2020')[:10]
         top_contents = get_top_contents()
         ad_contents = get_ad_contents()
         preview_contents = Contents.objects.all()[:10]
+        watching_video = Watching.objects.filter(profile__id=profile_pk)
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
         serializer_preview = ContentsSerializer(preview_contents, many=True)
         serializer_top = ContentsDetailSerializer(top_contents)
         serializer_ad = ContentsDetailSerializer(ad_contents)
+        serializer_watching_video = WatchingSerializer(watching_video, many=True)
 
         data = {
             "top_contents": serializer_top.data,
             "ad_contents": serializer_ad.data,
             "recommand_contents": serializer_recommand.data,
             "preview_contents": serializer_preview.data,
-            "all_contents": serializer_all.data
+            "all_contents": serializer_all.data,
+            "watcing_video": serializer_watching_video.data
         }
         return Response(data)
+
