@@ -17,8 +17,8 @@ def get_url():
 def get_item(movie_url):
     genre = []  # 장음르
     pub_year = '정보없'  # 개봉연도
-    actor = []  # 배우
-    director = []  # 감독
+    actors = []  # 배우
+    directors = []  # 감독
 
     url = movie_url
     soup = BeautifulSoup(requests.get(url).text, 'html.parser')
@@ -50,8 +50,10 @@ def get_item(movie_url):
     s2 = s1.findNextSibling('dd')
     s3 = s2.findNextSibling('dd')
     s4 = s3.findNextSibling('dd')
-    director.append(s2.p.getText())  # 감독
-    actor.append(s3.p.getText())  # 배우
+    for a in s2.p.select('a'):
+        directors.append(a.getText())
+    for a in s3.p.select('a'):
+        actors.append(a.getText())
     try:
         rating = s4.a.getText()  # 관람등급
     except AttributeError:
@@ -69,8 +71,8 @@ def get_item(movie_url):
         'pub_year': pub_year,
         'length': movie_length,
         'rating': rating,
-        'actor': actor,
-        'director': director,
+        'actor': actors,
+        'director': directors,
         'image_url': image_url,
         'summary': summary
     }
