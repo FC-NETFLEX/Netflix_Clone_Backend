@@ -50,8 +50,8 @@ def get_item(movie_url):
     s2 = s1.findNextSibling('dd')
     s3 = s2.findNextSibling('dd')
     s4 = s3.findNextSibling('dd')
-    director.append(s2.a.getText())  # 감독
-    actor.append(s3.a.getText())  # 배우
+    director.append(s2.p.getText())  # 감독
+    actor.append(s3.p.getText())  # 배우
     try:
         rating = s4.a.getText()  # 관람등급
     except AttributeError:

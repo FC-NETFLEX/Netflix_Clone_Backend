@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
-from contents.models import Contents
+from contents.models import Contents, Video
+from members.models import Watching
+from members.serializers import ProfileSerializer
 
 
 class ContentsDetailSerializer(serializers.ModelSerializer):
@@ -31,4 +33,24 @@ class ContentsSerializer(serializers.ModelSerializer):
             'id',
             'contents_title',
             'contents_image',
+        ]
+
+
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = [
+            'video_url'
+        ]
+
+
+class WatchingSerializer(serializers.ModelSerializer):
+    video = VideoSerializer()
+
+    class Meta:
+        model = Watching
+        fields = [
+            'id',
+            'video',
+            'playtime'
         ]
