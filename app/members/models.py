@@ -54,7 +54,7 @@ class Profile(models.Model):
 
     select_contents = models.ManyToManyField('contents.Contents',
                                              verbose_name='찜한 컨텐츠',
-                                             related_name='select_profile',
+                                             related_name='select_profiles',
                                              )
 
     like_contents = models.ManyToManyField('contents.Contents',

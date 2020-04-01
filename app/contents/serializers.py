@@ -1,18 +1,34 @@
+from rest_framework import serializers
+
 from contents.models import Contents
-from members import serializers
 
 
 class ContentsDetailSerializer(serializers.ModelSerializer):
+    actors = serializers.StringRelatedField(many=True, read_only=True)
+    directors = serializers.StringRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Contents
         fields = [
+            'id',
             'contents_title',
+            'contents_title_english',
             'contents_summary',
             'contents_image',
+            'contents_logo',
             'contents_rating',
             'contents_length',
             'contents_pub_year',
             'actors',
             'directors',
-            # '프로필이 갖고있는 select_contents'
+        ]
+
+
+class ContentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contents
+        fields = [
+            'id',
+            'contents_title',
+            'contents_image',
         ]

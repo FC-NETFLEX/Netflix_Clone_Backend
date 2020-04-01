@@ -1,28 +1,48 @@
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from contents.models import Contents
 from contents.serializers import ContentsDetailSerializer
 from members.models import Profile
 
 
-class ContentsRetrieveListVew(APIView):
-    def get(self, contents_pk):
+class ContentsRetrieveListView(APIView):
+    def get(self, request, profile_pk, contents_pk):
         contents = Contents.objects.get(pk=contents_pk)
-        contents.save()
+        serializer = ContentsDetailSerializer(contents)
+        profile = Profile.objects.get(pk=profile_pk)
+        is_selected = True if profile in contents.select_profiles.all() else False
+        is_like = True if profile in contents.like_profiles.all() else False
         data = {
-            'contents': contents
+            'contents': serializer.data,
+            'is_selected': is_selected,
+            'is_like': is_like,
         }
         return Response(data)
 
-    # put: 전체수정 / patch: 부분수정
-    def patch(self, request, pk):
-        contents = self.get_object(pk)
-        serializer = ContentsDetailSerializer(contents, data=request.data,
-                                              partial=True)  # partial:부분수정 허용
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(code=201, data=serializer.data)
-        return JsonResponse(code=400, data="wrong parameters")
+
+class ContentsLikeAPIView(APIView):
+    def get(self, request, profile_pk, contents_pk):
+        profile = Profile.objects.get(pk=profile_pk)
+        contents = Contents.objects.get(pk=contents_pk)
+
+        if profile in contents.like_profiles.all():
+            contents.like_profiles.remove(profile)
+        else:
+            contents.like_profiles.add(profile)
+
+        return Response(status=status.HTTP_200_OK)
+
+
+class ContentsSelectAPIView(APIView):
+    def get(self, request, profile_pk, contents_pk):
+        profile = Profile.objects.get(pk=profile_pk)
+        contents = Contents.objects.get(pk=contents_pk)
+
+        if profile in contents.select_profiles.all():
+            contents.select_profiles.remove(profile)
+        else:
+            contents.select_profiles.add(profile)
+
+        return Response(status=status.HTTP_200_OK)
