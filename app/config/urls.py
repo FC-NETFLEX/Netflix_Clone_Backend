@@ -36,6 +36,7 @@ schema_view = get_schema_view(
 
 urlpatterns_api = [
     path('members/', include('members.urls')),
+    path('profiles/', include('contents.urls'))
 ]
 
 urlpatterns = [
