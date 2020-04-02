@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from members.models import User, Profile, ProfileIcon
+from members.models import User, Profile, ProfileIcon, ProfileIconCategory
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -25,9 +25,16 @@ class ProfileIconSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileIcon
         fields = ['id',
-                  'icon_name',
-                  'icon',
-                  'icon_category']
+                  'icon']
+
+
+class ProfileIconListSerializer(serializers.ModelSerializer):
+    profileIcons = ProfileIconSerializer(many=True)
+
+    class Meta:
+        model = ProfileIconCategory
+        fields = ['category_name',
+                  'profileIcons']
 
 
 class ProfileSerializer(serializers.ModelSerializer):

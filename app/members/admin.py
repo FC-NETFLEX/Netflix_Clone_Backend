@@ -2,8 +2,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.auth import get_user_model
 
-from .forms import IconTypeChoiceForm
-from .models import Profile, ProfileIcon, Watching
+from .models import Profile, ProfileIcon, Watching, ProfileIconCategory
 
 User = get_user_model()
 
@@ -21,9 +20,13 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(ProfileIcon)
 class ProfileIconAdmin(admin.ModelAdmin):
     fields = ('icon', 'icon_name', 'icon_category')
-    form = IconTypeChoiceForm
 
     list_display = ('icon', 'icon_name', 'icon_category')
+
+
+@admin.register(ProfileIconCategory)
+class ProfileIconCategoryAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Watching)

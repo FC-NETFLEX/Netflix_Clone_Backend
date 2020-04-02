@@ -5,9 +5,9 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from members.models import User, Profile, ProfileIcon
+from members.models import User, Profile, ProfileIcon, ProfileIconCategory
 from members.serializers import UserCreateSerializer, ProfileIconSerializer, ProfileSerializer, \
-    ProfileCreateUpdateSerializer
+    ProfileCreateUpdateSerializer, ProfileIconListSerializer
 
 
 # 로그인
@@ -82,6 +82,6 @@ class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 # profile icon 선택 창에 icon list를 보여줌
 class ProfileIconListView(generics.ListAPIView):
-    serializer_class = ProfileIconSerializer
-    queryset = ProfileIcon.objects.all()
+    serializer_class = ProfileIconListSerializer
+    queryset = ProfileIconCategory.objects.all()
     permission_classes = [permissions.IsAuthenticated]
