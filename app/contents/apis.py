@@ -1,12 +1,13 @@
 import random
 
-from django.db.models import Max
+from django.db.models import Max, Min
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from contents.models import Contents
-from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer
+from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
+    PreviewContentsSerializer
 from members.models import Profile, Watching
 
 
@@ -14,7 +15,7 @@ def get_ad_contents():
     max_id = Contents.objects.all().aggregate(max_id=Max("id"))['max_id']
     while True:
         pk = random.randint(1, max_id)
-        contents = Contents.objects.filter(pk=pk).first()
+        contents = Contents.objects.filter(pk=pk, preview_video__isnull=False).first()
         if contents:
             return contents
 
@@ -26,6 +27,19 @@ def get_top_contents():
         contents = Contents.objects.filter(pk=pk).first()
         if contents:
             return contents
+
+
+def get_preview_video():
+    max_id = Contents.objects.filter(preview_video__isnull=False).aggregate(max_id=Max("id"))['max_id']
+    min_id = Contents.objects.filter(preview_video__isnull=False).aggregate(min_id=Min("id"))['min_id']
+    video_list = []
+    while True:
+        if len(video_list) == 10:
+            break
+        else:
+            pk = random.randint(min_id, max_id)
+            video_list.append(pk)
+    return video_list
 
 
 class ContentsRetrieveListView(APIView):
@@ -101,15 +115,15 @@ class ContentsListView(APIView):
         recommand_contents = all_contents.filter(contents_pub_year='2020')[:10]
         top_contents = get_top_contents()
         ad_contents = get_ad_contents()
-        preview_contents = Contents.objects.all()[:10]
+        preview_contents = Contents.objects.filter(pk__in=get_preview_video())
         watching_video = Watching.objects.filter(profile__id=profile_pk)
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
-        serializer_preview = ContentsSerializer(preview_contents, many=True)
         serializer_top = ContentsDetailSerializer(top_contents)
         serializer_ad = ContentsDetailSerializer(ad_contents)
         serializer_watching_video = WatchingSerializer(watching_video, many=True)
+        serializer_preview = PreviewContentsSerializer(preview_contents, many=True)
 
         data = {
             "top_contents": serializer_top.data,
@@ -120,4 +134,3 @@ class ContentsListView(APIView):
             "watcing_video": serializer_watching_video.data
         }
         return Response(data)
-
