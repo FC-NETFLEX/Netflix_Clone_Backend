@@ -7,7 +7,7 @@ from contents.models import Contents, Video, Category
 
 
 @admin.register(Contents)
-class ContentAdmin(admin.ModelAdmin):
+class ContentsAdmin(admin.ModelAdmin):
     pass
 
 

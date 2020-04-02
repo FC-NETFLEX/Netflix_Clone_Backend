@@ -11,6 +11,7 @@ class Contents(models.Model):
     contents_length = models.CharField(max_length=64)
     contents_pub_year = models.CharField(max_length=8)
     is_movie = models.BooleanField(default=True)
+    preview_video = models.URLField(null=True)
 
     actors = models.ManyToManyField('contents.Actor',
                                     related_name='contents',
