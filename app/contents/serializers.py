@@ -54,3 +54,14 @@ class WatchingSerializer(serializers.ModelSerializer):
             'video',
             'playtime'
         ]
+
+
+class PreviewContentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contents
+        fields = [
+            'id',
+            'contents_title',
+            'preview_video',
+            'contents_logo'
+        ]
