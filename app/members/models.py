@@ -74,7 +74,20 @@ class Profile(models.Model):
 class ProfileIcon(models.Model):
     icon_name = models.CharField('아이콘 이름', max_length=128)
     icon = models.ImageField('아이콘', upload_to='profile/icon/')
-    icon_category = models.CharField('아이콘 타입', max_length=64)
+    icon_category = models.ForeignKey('members.ProfileIconCategory',
+                                      verbose_name='아이콘 카테고리',
+                                      related_name='profileIcons',
+                                      on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.icon.url
+
+
+class ProfileIconCategory(models.Model):
+    category_name = models.CharField('아이콘 카테고리', max_length=128)
+
+    def __str__(self):
+        return self.category_name
 
 
 class Watching(models.Model):
