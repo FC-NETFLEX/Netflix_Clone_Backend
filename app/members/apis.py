@@ -78,6 +78,7 @@ class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.watching_videos.clear()
         instance.select_contents.clear()
+        instance.like_contents.clear()
         super().perform_destroy(instance)
 
 
