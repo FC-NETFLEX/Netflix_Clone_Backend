@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework import status, generics, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -71,7 +72,7 @@ class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProfileCreateUpdateSerializer
 
     def get_object(self):
-        profile = Profile.objects.get(pk=self.kwargs.get('pk'))
+        profile = get_object_or_404(Profile, pk=self.kwargs.get('pk'))
         return profile
 
     def perform_destroy(self, instance):

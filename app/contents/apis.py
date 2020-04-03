@@ -12,7 +12,7 @@ from members.models import Profile, Watching
 
 class ContentsRetrieveListView(APIView):
     def get(self, request, profile_pk, contents_pk):
-        contents = Contents.objects.get(pk=contents_pk)
+        contents = get_object_or_404(Contents, pk=contents_pk)
         serializer = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
         return Response(serializer.data)
 
