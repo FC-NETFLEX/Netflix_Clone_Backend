@@ -55,7 +55,6 @@ class ContentsListView(APIView):
         watching_video = Watching.objects.filter(profile__id=profile_pk)
         top10_contents = get_top10_contents()
 
-
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
         serializer_top = ContentsDetailSerializer(top_contents, context={'profile_pk': profile_pk})
