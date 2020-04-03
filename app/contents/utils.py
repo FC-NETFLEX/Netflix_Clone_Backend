@@ -1,4 +1,5 @@
 import random
+from collections import Counter
 
 from django.db.models import Max, Min
 
@@ -36,3 +37,15 @@ def get_preview_video():
             pk = random.randint(min_id, max_id)
             video_list.append(pk)
     return video_list
+
+
+def get_top10_contents():
+    top10_list = []
+    like_contents = Contents.objects.filter(like_profiles__isnull=False)
+    select_contents = Contents.objects.filter(select_profiles__isnull=False)
+    counter = (Counter(like_contents) + Counter(select_contents)).most_common(10)
+
+    for contents, _ in counter:
+        top10_list.append(contents)
+
+    return top10_list

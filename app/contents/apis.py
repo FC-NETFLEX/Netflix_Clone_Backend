@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -5,7 +6,7 @@ from rest_framework.views import APIView
 from contents.models import Contents
 from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
     PreviewContentsSerializer
-from contents.utils import get_top_contents, get_ad_contents
+from contents.utils import get_top_contents, get_ad_contents, get_preview_video, get_top10_contents
 from members.models import Profile, Watching
 
 
@@ -18,8 +19,8 @@ class ContentsRetrieveListView(APIView):
 
 class ContentsLikeAPIView(APIView):
     def get(self, request, profile_pk, contents_pk):
-        profile = Profile.objects.get(pk=profile_pk)
-        contents = Contents.objects.get(pk=contents_pk)
+        profile = get_object_or_404(Profile, pk=profile_pk)
+        contents = get_object_or_404(Contents, pk=contents_pk)
 
         if profile in contents.like_profiles.all():
             contents.like_profiles.remove(profile)
@@ -31,8 +32,8 @@ class ContentsLikeAPIView(APIView):
 
 class ContentsSelectAPIView(APIView):
     def get(self, request, profile_pk, contents_pk):
-        profile = Profile.objects.get(pk=profile_pk)
-        contents = Contents.objects.get(pk=contents_pk)
+        profile = get_object_or_404(Profile, pk=profile_pk)
+        contents = get_object_or_404(Contents, pk=contents_pk)
 
         if profile in contents.select_profiles.all():
             contents.select_profiles.remove(profile)
@@ -45,12 +46,15 @@ class ContentsSelectAPIView(APIView):
 class ContentsListView(APIView):
 
     def get(self, request, profile_pk):
+        profile = get_object_or_404(Profile, pk=profile_pk)
         all_contents = Contents.objects.all()
         recommand_contents = all_contents.filter(contents_pub_year='2020')[:10]
         top_contents = get_top_contents()
         ad_contents = get_ad_contents()
         preview_contents = Contents.objects.filter(pk__in=get_preview_video())
         watching_video = Watching.objects.filter(profile__id=profile_pk)
+        top10_contents = get_top10_contents()
+
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
@@ -58,10 +62,12 @@ class ContentsListView(APIView):
         serializer_ad = ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk})
         serializer_watching_video = WatchingSerializer(watching_video, many=True)
         serializer_preview = PreviewContentsSerializer(preview_contents, many=True)
+        serializer_top10 = ContentsSerializer(top10_contents, many=True)
 
         data = {
             "top_contents": serializer_top.data,
             "ad_contents": serializer_ad.data,
+            "top10_contents": serializer_top10.data,
             "recommand_contents": serializer_recommand.data,
             "preview_contents": serializer_preview.data,
             "all_contents": serializer_all.data,
