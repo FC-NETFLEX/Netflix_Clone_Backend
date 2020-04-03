@@ -12,7 +12,7 @@ from members.models import Profile, Watching
 
 class ContentsRetrieveListView(APIView):
     def get(self, request, profile_pk, contents_pk):
-        contents = Contents.objects.get(pk=contents_pk)
+        contents = get_object_or_404(Contents, pk=contents_pk)
         serializer = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
         return Response(serializer.data)
 
@@ -54,7 +54,6 @@ class ContentsListView(APIView):
         preview_contents = Contents.objects.filter(pk__in=get_preview_video())
         watching_video = Watching.objects.filter(profile__id=profile_pk)
         top10_contents = get_top10_contents()
-
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
