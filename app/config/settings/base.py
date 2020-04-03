@@ -13,10 +13,8 @@ import json
 import os
 
 import boto3
-import sentry_sdk
 
 # sentry 설정
-from sentry_sdk.integrations.django import DjangoIntegration
 
 
 session = boto3.Session(profile_name="netflex-secrets-manager")
@@ -26,7 +24,6 @@ secretsManager = session.client(
 )
 
 SECRETS = json.loads(secretsManager.get_secret_value(SecretId='netflex')["SecretString"])['netflex']
-
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']
@@ -77,6 +74,9 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
 

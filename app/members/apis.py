@@ -6,13 +6,15 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from members.models import User, Profile, ProfileIcon, ProfileIconCategory
-from members.serializers import UserCreateSerializer, ProfileIconSerializer, ProfileSerializer, \
+from members.models import User, Profile, ProfileIconCategory
+from members.serializers import UserCreateSerializer, ProfileSerializer, \
     ProfileCreateUpdateSerializer, ProfileIconListSerializer
 
 
 # 로그인
 class AuthTokenAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
@@ -32,7 +34,6 @@ class AuthTokenAPIView(APIView):
 # 로그아웃하면 서버에서 삭제
 # 로그아웃
 class UserLogoutAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         request.user.auth_token.delete()
@@ -41,6 +42,7 @@ class UserLogoutAPIView(APIView):
 
 # 회원가입
 class CreateUserView(generics.CreateAPIView):
+    permission_classes = [permissions.AllowAny]
     serializer_class = UserCreateSerializer
     queryset = User.objects.all()
 
@@ -51,7 +53,6 @@ class CreateUserView(generics.CreateAPIView):
 
 # profile 생성, profile list 처리
 class ProfileListCreateView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -69,7 +70,6 @@ class ProfileListCreateView(generics.ListCreateAPIView):
 class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileCreateUpdateSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         profile = get_object_or_404(Profile, pk=self.kwargs.get('pk'))
@@ -85,4 +85,3 @@ class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class ProfileIconListView(generics.ListAPIView):
     serializer_class = ProfileIconListSerializer
     queryset = ProfileIconCategory.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
