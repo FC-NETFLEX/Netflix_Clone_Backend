@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from contents.models import Contents
 from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
     PreviewContentsSerializer
-from contents.utils import get_top_contents, get_ad_contents
+from contents.utils import get_top_contents, get_ad_contents, get_preview_video, get_top10_contents
 from members.models import Profile, Watching
 
 
@@ -51,6 +51,7 @@ class ContentsListView(APIView):
         ad_contents = get_ad_contents()
         preview_contents = Contents.objects.filter(pk__in=get_preview_video())
         watching_video = Watching.objects.filter(profile__id=profile_pk)
+        top10_contents = get_top10_contents()
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
@@ -58,10 +59,12 @@ class ContentsListView(APIView):
         serializer_ad = ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk})
         serializer_watching_video = WatchingSerializer(watching_video, many=True)
         serializer_preview = PreviewContentsSerializer(preview_contents, many=True)
+        serializer_top10 = ContentsSerializer(top10_contents, many=True)
 
         data = {
             "top_contents": serializer_top.data,
             "ad_contents": serializer_ad.data,
+            "top10_contents": serializer_top10.data,
             "recommand_contents": serializer_recommand.data,
             "preview_contents": serializer_preview.data,
             "all_contents": serializer_all.data,
