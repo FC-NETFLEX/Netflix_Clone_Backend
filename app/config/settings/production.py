@@ -19,3 +19,8 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
 )
+
+STATIC_ROOT = os.path.join(ROOT_DIR, '.static/')
+STATICFILES_DIRS = [
+    STATIC_ROOT
+]

@@ -6,4 +6,8 @@ server{
     location / {
         proxy_pass http://unix:/run/netflex.sock;
     }
+
+    location /static/ {
+        alias   /srv/Netflex_Clone_Backend/.static/;
+    }
 }
