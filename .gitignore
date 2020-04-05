@@ -3,6 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=git,linux,macos,django,python,windows,virtualenv,pycharm+all,jupyternotebooks
 /requirements.txt
 /app/notebook_test
+/.coveragerc
 ### Django ###
 *.log
 *.pot
