@@ -1,7 +1,16 @@
 from urllib import parse
-from bs4 import BeautifulSoup
+
 import requests
-import magic
+from bs4 import BeautifulSoup
+
+
+def get_page_url():
+    page_url_list = []
+    base_url = 'https://movie.naver.com/movie/sdb/rank/rmovie.nhn?sel=pnt&tg=0&date=20200405&page='
+    for i in range(1, 10 + 1):
+        page_url_list.append(base_url + str(i))
+    return page_url_list
+
 
 def get_url():
     url = r'https://movie.naver.com/movie/sdb/rank/rmovie.nhn'
@@ -76,4 +85,3 @@ def get_item(movie_url):
         'image_url': image_url,
         'summary': summary
     }
-
