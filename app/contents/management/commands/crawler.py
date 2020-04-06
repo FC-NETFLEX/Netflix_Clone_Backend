@@ -12,13 +12,12 @@ def get_page_url():
     return page_url_list
 
 
-def get_url():
-    url = r'https://movie.naver.com/movie/sdb/rank/rmovie.nhn'
-    req = requests.get(url)
-    soup = BeautifulSoup(req.text, 'html.parser')
+def get_url(page_url):
+    req = requests.get(page_url)
+    soup = BeautifulSoup(req.text)
     url_list = []
 
-    for movie_list in soup.select('div.tit3'):
+    for movie_list in soup.select('div.tit5'):
         url_list.append('https://movie.naver.com' + movie_list.a['href'])
     return url_list
 
