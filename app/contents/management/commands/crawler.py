@@ -7,14 +7,14 @@ from bs4 import BeautifulSoup
 def get_page_url():
     page_url_list = []
     base_url = 'https://movie.naver.com/movie/sdb/rank/rmovie.nhn?sel=pnt&tg=0&date=20200405&page='
-    for i in range(1, 3):
+    for i in range(1, 10 + 1):
         page_url_list.append(base_url + str(i))
     return page_url_list
 
 
 def get_url(page_url):
     req = requests.get(page_url)
-    soup = BeautifulSoup(req.text)
+    soup = BeautifulSoup(req.text, 'html.parser')
     url_list = []
 
     for movie_list in soup.select('div.tit5'):
@@ -23,17 +23,20 @@ def get_url(page_url):
 
 
 def get_item(url):
-    rating_list = ['전제 관람가', '12세 관람가', '15세 관람가', '청소년 관람불가']
+    base_url = "https://movie.naver.com"
+    rating_list = ['전체 관람가', '12세 관람가', '15세 관람가', '청소년 관람불가']
     genre = []  # 장르
     pub_year = []  # 개봉연도
     actors = []  # 배우
     directors = []  # 감독
 
-    soup = BeautifulSoup(requests.get(url).text)
+    soup = BeautifulSoup(requests.get(base_url + url).text, 'html.parser')
     try:
         title = soup.select_one('h3.h_movie').find('a').getText()  # 타이틀
     except AttributeError:
         return None
+    b_sub_title = soup.select_one('strong.h_movie2').getText()
+    title_english = (list(map(str.strip, b_sub_title.split(', ')))[0])
     d1 = soup.select_one('dl.info_spec')
     s1 = d1.dt.findNextSibling('dd')
     temp = s1.find_all('a')
@@ -73,6 +76,7 @@ def get_item(url):
         summary = ''
     return {
         'title': title,
+        'title_english': title_english,
         'genre': genre,
         'pub_year': pub_year,
         'length': movie_length,
