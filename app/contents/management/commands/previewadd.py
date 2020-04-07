@@ -1,8 +1,10 @@
-import boto3
 import random
+
+import boto3
 from django.core.management import BaseCommand
 
 from config.settings.base import SECRETS
+from contents.models import Contents
 
 
 class Command(BaseCommand):
@@ -19,4 +21,10 @@ class Command(BaseCommand):
         for item in response['Contents']:
             preview_video_list.append("https://fc-netflex.s3.ap-northeast-2.amazonaws.com/" + item['Key'])
 
-        print(preview_video_list)
+        contents_list = Contents.objects.order_by('pk')[:100]
+
+        for contents in contents_list:
+            idx = random.randint(0, len(preview_video_list) - 1)
+            contents.preview_video = preview_video_list[idx]
+            contents.save()
+        return self.stdout.write('preview video 추가 완료')
