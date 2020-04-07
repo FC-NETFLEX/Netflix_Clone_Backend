@@ -8,7 +8,8 @@ from contents.models import Contents, Video, Category
 
 @admin.register(Contents)
 class ContentsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['pk', 'contents_title', 'contents_rating', 'preview_video']
+    ordering = ['pk']
 
 
 @admin.register(Video)
