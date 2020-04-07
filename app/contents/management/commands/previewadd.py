@@ -3,7 +3,7 @@ import random
 import boto3
 from django.core.management import BaseCommand
 
-from config.settings.base import SECRETS
+from config.settings.base import SECRETS, MEDIA_URL
 from contents.models import Contents
 
 
@@ -17,9 +17,10 @@ class Command(BaseCommand):
             Bucket='fc-netflex',
             Prefix='video/preview',
             MaxKeys=100)
+        # 첫번째는 디렉토리의 주소가 나온다 (/video/preview/)
         response['Contents'].pop(0)
         for item in response['Contents']:
-            preview_video_list.append("https://fc-netflex.s3.ap-northeast-2.amazonaws.com/" + item['Key'])
+            preview_video_list.append(MEDIA_URL + item['Key'])
 
         contents_list = Contents.objects.order_by('pk')[:100]
 
