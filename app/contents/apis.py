@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -44,16 +44,24 @@ class ContentsSelectAPIView(APIView):
 
 
 class ContentsListView(APIView):
-
+    permission_classes = [permissions.AllowAny]
     def get(self, request, profile_pk):
-        profile = get_object_or_404(Profile, pk=profile_pk)
         all_contents = Contents.objects.all()
+        profile = get_object_or_404(Profile, pk=profile_pk)
+        if profile.is_kids:
+            all_contents = all_contents.filter(contents_rating='전체 관람가')
+        if request.query_params:
+            contents_name = request.query_params.get('contents')[0]
+            all_contents = all_contents.filter(categories__category_name=contents_name)
+
+        # all_contents.filter()
+
         recommand_contents = all_contents.filter(contents_pub_year='2020')[:10]
-        top_contents = get_top_contents()
-        ad_contents = get_ad_contents()
-        preview_contents = Contents.objects.filter(pk__in=get_preview_video())
         watching_video = Watching.objects.filter(profile__id=profile_pk)
-        top10_contents = get_top10_contents()
+        top_contents = get_top_contents(all_contents)
+        ad_contents = get_ad_contents(all_contents)
+        preview_contents = get_preview_video(all_contents)
+        top10_contents = get_top10_contents(all_contents)
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommand = ContentsSerializer(recommand_contents, many=True)
