@@ -5,6 +5,8 @@ from collections import Counter
 def get_ad_contents(queryset):
     contents_list = queryset.filter(preview_video__isnull=False)
     max_int = contents_list.count() - 1
+    if max_int < 0:
+        return
     while True:
         idx = random.randint(0, max_int)
         contents = contents_list[idx]
@@ -13,8 +15,10 @@ def get_ad_contents(queryset):
 
 
 def get_top_contents(queryset):
-    contents_list = queryset.filter(contents_pub_year='2020')
+    contents_list = queryset.filter(contents_pub_year__gte='2010')
     max_int = contents_list.count() - 1
+    if max_int < 0:
+        return
     while True:
         idx = random.randint(0, max_int)
         contents = contents_list[idx]
@@ -25,10 +29,12 @@ def get_top_contents(queryset):
 def get_preview_video(queryset):
     contents_list = queryset.filter(preview_video__isnull=False)
     max_int = contents_list.count() - 1
+    if max_int < 0:
+        return
     video_list = []
     pk_list = []
     while True:
-        if len(video_list) == 10:
+        if len(video_list) == max_int or len(video_list) == 10:
             break
         pk = random.randint(0, max_int)
         if pk in pk_list:

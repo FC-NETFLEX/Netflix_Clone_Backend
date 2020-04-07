@@ -4,9 +4,18 @@ from contents.models import Contents, Video
 from members.models import Watching, Profile
 
 
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = [
+            'video_url'
+        ]
+
+
 class ContentsDetailSerializer(serializers.ModelSerializer):
     actors = serializers.StringRelatedField(many=True, read_only=True)
     directors = serializers.StringRelatedField(many=True, read_only=True)
+    videos = VideoSerializer(many=True)
 
     class Meta:
         model = Contents
@@ -23,6 +32,7 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
             'preview_video',
             'actors',
             'directors',
+            'videos',
         ]
 
     def to_representation(self, instance):
@@ -43,14 +53,6 @@ class ContentsSerializer(serializers.ModelSerializer):
             'id',
             'contents_title',
             'contents_image',
-        ]
-
-
-class VideoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Video
-        fields = [
-            'video_url'
         ]
 
 
