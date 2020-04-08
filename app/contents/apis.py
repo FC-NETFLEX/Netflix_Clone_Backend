@@ -1,3 +1,5 @@
+
+
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -60,7 +62,15 @@ class SearchContentsListAPIView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
-        queryset = Contents.objects.all()
+        try:
+            profile = Profile.objects.get(pk=self.kwargs.get('profile_pk'))
+        except Profile.DoesNotExist:
+            raise Http404
+
+        if profile.is_kids:
+            queryset = Contents.objects.filter(contents_rating='전체 관람가')
+        else:
+            queryset = Contents.objects.all()
         keyword = self.request.query_params.get('keyword')
         return queryset.filter(Q(contents_title__icontains=keyword) | Q(contents_title_english__icontains=keyword))
 
