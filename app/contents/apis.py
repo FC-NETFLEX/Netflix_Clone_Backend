@@ -1,6 +1,6 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions, generics
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,9 +23,10 @@ class SelectContentsListAPIView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
-        profile = self.kwargs.get('profile_pk')
-        if profile is None:
-            raise ValidationError()
+        try:
+            profile = Profile.objects.get(pk=self.kwargs.get('profile_pk'))
+        except Profile.DoesNotExist:
+            raise Http404
         return Contents.objects.filter(select_profiles=profile)
 
 
