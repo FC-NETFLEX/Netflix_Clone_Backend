@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions, generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,7 +16,6 @@ class ContentsRetrieveListView(APIView):
     def get(self, request, profile_pk, contents_pk):
         contents = get_object_or_404(Contents, pk=contents_pk)
         serializer = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
-
         return Response(serializer.data)
 
 
@@ -54,6 +54,15 @@ class ContentsSelectAPIView(APIView):
             contents.select_profiles.add(profile)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class SearchContentsListAPIView(generics.ListAPIView):
+    serializer_class = ContentsSerializer
+
+    def get_queryset(self):
+        queryset = Contents.objects.all()
+        keyword = self.request.query_params.get('keyword')
+        return queryset.filter(Q(contents_title__icontains=keyword) | Q(contents_title_english__icontains=keyword))
 
 
 class ContentsListView(APIView):
