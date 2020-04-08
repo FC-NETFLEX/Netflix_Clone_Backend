@@ -1,6 +1,6 @@
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,6 +17,16 @@ class ContentsRetrieveListView(APIView):
         serializer = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
 
         return Response(serializer.data)
+
+
+class SelectContentsListAPIView(generics.ListAPIView):
+    serializer_class = ContentsSerializer
+
+    def get_queryset(self):
+        profile = self.kwargs.get('profile_pk')
+        if profile is None:
+            raise ValidationError()
+        return Contents.objects.filter(select_profiles=profile)
 
 
 class ContentsLikeAPIView(APIView):
