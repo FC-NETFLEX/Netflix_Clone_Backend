@@ -1,5 +1,3 @@
-
-
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -66,13 +64,24 @@ class SearchContentsListAPIView(generics.ListAPIView):
             profile = Profile.objects.get(pk=self.kwargs.get('profile_pk'))
         except Profile.DoesNotExist:
             raise Http404
-
         if profile.is_kids:
             queryset = Contents.objects.filter(contents_rating='전체 관람가')
         else:
             queryset = Contents.objects.all()
         keyword = self.request.query_params.get('keyword')
-        return queryset.filter(Q(contents_title__icontains=keyword) | Q(contents_title_english__icontains=keyword))
+
+        contents_list = queryset.filter(
+            Q(contents_title__icontains=keyword) | Q(contents_title_english__icontains=keyword))
+        contents_count = contents_list.count()
+        if contents_count == 0:
+            contents_list = None
+        elif contents_count < 21:
+            extra_contents_list = get_top10_contents(queryset, count=21 - contents_count)
+            contents_list = contents_list.union(extra_contents_list)
+        elif contents_count > 21:
+            contents_list = contents_list[:21]
+
+        return contents_list
 
 
 class ContentsListView(APIView):
@@ -92,7 +101,7 @@ class ContentsListView(APIView):
         top_contents = get_top_contents(all_contents)
         ad_contents = get_ad_contents(all_contents)
         preview_contents = get_preview_video(all_contents)
-        top10_contents = get_top10_contents(all_contents)
+        top10_contents = get_top10_contents(all_contents, count=10)
 
         serializer_all = ContentsSerializer(all_contents, many=True)
         serializer_recommend = ContentsSerializer(recommend_contents, many=True)

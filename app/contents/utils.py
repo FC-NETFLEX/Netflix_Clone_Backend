@@ -1,6 +1,8 @@
 import random
 from collections import Counter
 
+from contents.models import Contents
+
 
 def get_ad_contents(queryset):
     contents_list = queryset.filter(preview_video__isnull=False)
@@ -44,11 +46,13 @@ def get_preview_video(queryset):
     return video_list
 
 
-def get_top10_contents(queryset):
+def get_top10_contents(queryset, count):
     top10_list = []
     like_contents = queryset.filter(like_profiles__isnull=False)
     select_contents = queryset.filter(select_profiles__isnull=False)
-    counter = (Counter(like_contents) + Counter(select_contents)).most_common(10)
+    counter = (Counter(like_contents) + Counter(select_contents)).most_common(count)
     for contents, _ in counter:
         top10_list.append(contents)
-    return top10_list
+    pk_list = [contents.pk for contents in top10_list]
+    top10_contents_queryset = Contents.objects.filter(pk__in=pk_list)
+    return top10_contents_queryset
