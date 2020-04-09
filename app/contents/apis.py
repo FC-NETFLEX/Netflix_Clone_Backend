@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions, generics
 from rest_framework.response import Response
@@ -13,7 +12,7 @@ from contents.utils import get_top_contents, get_ad_contents, get_preview_video,
 from members.models import Profile, Watching
 
 
-class ContentsRetrieveListView(APIView):
+class ContentsRetrieveView(APIView):
     def get(self, request, profile_pk, contents_pk):
         contents = get_object_or_404(Contents, pk=contents_pk)
         serializer_contents = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
@@ -34,10 +33,7 @@ class SelectContentsListAPIView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
-        try:
-            profile = Profile.objects.get(pk=self.kwargs.get('profile_pk'))
-        except Profile.DoesNotExist:
-            raise Http404
+        profile = get_object_or_404(Profile, pk=self.kwargs.get('profile_pk'))
         return Contents.objects.filter(select_profiles=profile)
 
 
@@ -71,10 +67,8 @@ class SearchContentsListAPIView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
-        try:
-            profile = Profile.objects.get(pk=self.kwargs.get('profile_pk'))
-        except Profile.DoesNotExist:
-            raise Http404
+        profile = get_object_or_404(Profile, pk=self.kwargs.get('profile_pk'))
+
         if profile.is_kids:
             queryset = Contents.objects.filter(contents_rating='전체 관람가')
         else:
@@ -84,6 +78,7 @@ class SearchContentsListAPIView(generics.ListAPIView):
         contents_list = queryset.filter(
             Q(contents_title__icontains=keyword) | Q(contents_title_english__icontains=keyword))
         contents_count = contents_list.count()
+
         if contents_count == 0:
             contents_list = None
         elif contents_count < 21:
@@ -98,29 +93,34 @@ class SearchContentsListAPIView(generics.ListAPIView):
 class ContentsListView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, profile_pk):
-        all_contents = Contents.objects.all()
+    def get_queryset(self, request, profile_pk):
+        queryset = Contents.objects.all()
         profile = get_object_or_404(Profile, pk=profile_pk)
         if profile.is_kids:
-            all_contents = all_contents.filter(contents_rating='전체 관람가')
+            queryset = queryset.filter(contents_rating='전체 관람가')
         if request.query_params:
             category_name = request.query_params.get('category')
-            all_contents = all_contents.filter(categories__category_name=category_name)
+            queryset = queryset.filter(categories__category_name=category_name)
+        return queryset
 
-        recommend_contents = all_contents.filter(contents_pub_year__gte='2018')[:10]
-        watching_video = Watching.objects.filter(profile__id=profile_pk)
-        top_contents = get_top_contents(all_contents)
-        ad_contents = get_ad_contents(all_contents)
-        preview_contents = get_preview_video(all_contents)
-        top10_contents = get_popular_contents(all_contents, count=10)
 
-        serializer_all = ContentsSerializer(all_contents, many=True)
-        serializer_recommend = ContentsSerializer(recommend_contents, many=True)
+    def get(self, request, profile_pk):
+        all_contents_list = self.get_queryset(request, profile_pk)
+
+        recommend_contents_list = all_contents_list.filter(contents_pub_year__gte='2018')[:10]
+        top_contents = get_top_contents(all_contents_list)
+        ad_contents = get_ad_contents(all_contents_list)
+        preview_contents_list = get_preview_video(all_contents_list)
+        top10_contents_list = get_popular_contents(all_contents_list, count=10)
+        watching_video_list = Watching.objects.filter(profile__id=profile_pk)
+
+        serializer_all = ContentsSerializer(all_contents_list, many=True)
+        serializer_recommend = ContentsSerializer(recommend_contents_list, many=True)
         serializer_top = ContentsDetailSerializer(top_contents, context={'profile_pk': profile_pk})
         serializer_ad = ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk})
-        serializer_watching_video = WatchingSerializer(watching_video, many=True)
-        serializer_preview = PreviewContentsSerializer(preview_contents, many=True)
-        serializer_top10 = ContentsSerializer(top10_contents, many=True)
+        serializer_watching_video = WatchingSerializer(watching_video_list, many=True)
+        serializer_preview = PreviewContentsSerializer(preview_contents_list, many=True)
+        serializer_top10 = ContentsSerializer(top10_contents_list, many=True)
 
         data = {
             "top_contents": serializer_top.data,
