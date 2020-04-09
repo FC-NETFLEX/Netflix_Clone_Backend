@@ -17,6 +17,8 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
     actors = serializers.StringRelatedField(many=True, read_only=True)
     directors = serializers.StringRelatedField(many=True, read_only=True)
     videos = VideoSerializer(many=True)
+    is_select = serializers.SerializerMethodField()
+    is_like = serializers.SerializerMethodField()
 
     class Meta:
         model = Contents
@@ -34,17 +36,17 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
             'actors',
             'directors',
             'videos',
+            'is_select',
+            'is_like'
         ]
 
-    def to_representation(self, instance):
-        profile = Profile.objects.get(pk=self.context['profile_pk'])
-        is_selected = True if profile in instance.select_profiles.all() else False
-        is_like = True if profile in instance.like_profiles.all() else False
+    def get_is_select(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        return True if profile in instance.select_profiles.all() else False
 
-        representation = super().to_representation(instance)
-        representation['is_selected'] = is_selected
-        representation['is_like'] = is_like
-        return representation
+    def get_is_like(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        return True if profile in instance.like_profiles.all() else False
 
 
 class ContentsSerializer(serializers.ModelSerializer):
@@ -65,7 +67,9 @@ class WatchingSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'video',
-            'playtime'
+            'profile',
+            'playtime',
+            'video_length'
         ]
 
 
