@@ -64,7 +64,7 @@ class WatchingSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'video',
-            'playtime'
+            'playtime',
         ]
 
 
