@@ -46,7 +46,7 @@ def get_preview_video(queryset):
     return video_list
 
 
-def get_top10_contents(queryset, count):
+def get_popular_contents(queryset, count):
     top10_list = []
     like_contents = queryset.filter(like_profiles__isnull=False)
     select_contents = queryset.filter(select_profiles__isnull=False)
