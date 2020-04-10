@@ -103,7 +103,6 @@ class ContentsListView(APIView):
             queryset = queryset.filter(categories__category_name=category_name)
         return queryset
 
-
     def get(self, request, profile_pk):
         all_contents_list = self.get_queryset(request, profile_pk)
 
@@ -114,21 +113,13 @@ class ContentsListView(APIView):
         top10_contents_list = get_popular_contents(all_contents_list, count=10)
         watching_video_list = Watching.objects.filter(profile__id=profile_pk)
 
-        serializer_all = ContentsSerializer(all_contents_list, many=True)
-        serializer_recommend = ContentsSerializer(recommend_contents_list, many=True)
-        serializer_top = ContentsDetailSerializer(top_contents, context={'profile_pk': profile_pk})
-        serializer_ad = ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk})
-        serializer_watching_video = WatchingSerializer(watching_video_list, many=True)
-        serializer_preview = PreviewContentsSerializer(preview_contents_list, many=True)
-        serializer_top10 = ContentsSerializer(top10_contents_list, many=True)
-
         data = {
-            "top_contents": serializer_top.data,
-            "ad_contents": serializer_ad.data,
-            "top10_contents": serializer_top10.data,
-            "recommend_contents": serializer_recommend.data,
-            "preview_contents": serializer_preview.data,
-            "all_contents": serializer_all.data,
-            "watching_video": serializer_watching_video.data
+            "top_contents": ContentsDetailSerializer(top_contents, context={'profile_pk': profile_pk}).data,
+            "ad_contents": ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk}),
+            "top10_contents": ContentsSerializer(top10_contents_list, many=True).data,
+            "recommend_contents": ContentsSerializer(recommend_contents_list, many=True).data,
+            "preview_contents": PreviewContentsSerializer(preview_contents_list, many=True).data,
+            "all_contents": ContentsSerializer(all_contents_list, many=True).data,
+            "watching_video": WatchingSerializer(watching_video_list, many=True).data
         }
         return Response(data)
