@@ -78,7 +78,6 @@ class WatchingCUDSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'video',
-            'profile',
             'playtime',
             'video_length',
         ]
