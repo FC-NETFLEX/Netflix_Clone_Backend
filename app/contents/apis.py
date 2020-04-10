@@ -15,8 +15,18 @@ from members.models import Profile, Watching
 class ContentsRetrieveView(APIView):
     def get(self, request, profile_pk, contents_pk):
         contents = get_object_or_404(Contents, pk=contents_pk)
-        serializer = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
-        return Response(serializer.data)
+        serializer_contents = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
+        similar_contents = Contents.objects.filter(categories__in=contents.categories.all())[:6]
+        if similar_contents.count() < 6:
+            similar_contents = similar_contents[:3]
+        serializer_similar_contents = ContentsSerializer(similar_contents, many=True)
+
+        data = {
+            'contents': serializer_contents.data,
+            'similar_contents': serializer_similar_contents.data
+        }
+
+        return Response(data)
 
 
 class SelectContentsListAPIView(generics.ListAPIView):
