@@ -147,13 +147,16 @@ class WatchingUpdateDestroyView(mixins.DestroyModelMixin,
                                 generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = WatchingCUDSerializer
-    queryset = Watching.objects.all()
+
+    def get_queryset(self):
+        profile_pk = self.kwargs.get('profile_pk')
+        return Watching.objects.filter(profile__pk=profile_pk)
+
+    def perform_update(self, serializer):
+        serializer.save(profile=get_object_or_404(Profile, pk=self.kwargs.get('profile_pk')))
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
-    def perform_update(self, serializer):
-        serializer.save(profile=get_object_or_404(Profile, pk=self.kwargs.get('profile_pk')))
