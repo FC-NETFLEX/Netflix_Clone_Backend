@@ -60,8 +60,19 @@ class ContentsSerializer(serializers.ModelSerializer):
 
 
 class WatchingSerializer(serializers.ModelSerializer):
-    video = VideoSerializer()
+    video = VideoSerializer(read_only=True)
 
+    class Meta:
+        model = Watching
+        fields = [
+            'id',
+            'video',
+            'playtime',
+            'video_length'
+        ]
+
+
+class WatchingCUDSerializer(serializers.ModelSerializer):
     class Meta:
         model = Watching
         fields = [
@@ -69,7 +80,7 @@ class WatchingSerializer(serializers.ModelSerializer):
             'video',
             'profile',
             'playtime',
-            'video_length'
+            'video_length',
         ]
 
 

@@ -1,12 +1,12 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import status, permissions, generics
+from rest_framework import status, permissions, generics, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from contents.models import Contents
 from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
-    PreviewContentsSerializer
+    PreviewContentsSerializer, WatchingCUDSerializer
 from contents.utils import get_top_contents, get_ad_contents, get_preview_video, \
     get_popular_contents
 from members.models import Profile, Watching
@@ -29,7 +29,7 @@ class ContentsRetrieveView(APIView):
         return Response(data)
 
 
-class SelectContentsListAPIView(generics.ListAPIView):
+class ContentsSelectListView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
@@ -63,7 +63,7 @@ class ContentsSelectAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class SearchContentsListAPIView(generics.ListAPIView):
+class ContentsSearchListView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
@@ -103,7 +103,6 @@ class ContentsListView(APIView):
             queryset = queryset.filter(categories__category_name=category_name)
         return queryset
 
-
     def get(self, request, profile_pk):
         all_contents_list = self.get_queryset(request, profile_pk)
 
@@ -132,3 +131,13 @@ class ContentsListView(APIView):
             "watching_video": serializer_watching_video.data
         }
         return Response(data)
+
+
+class WatchingCreateView(generics.CreateAPIView):
+    serializer_class = WatchingCUDSerializer
+    queryset = Watching.objects.all()
+
+
+class WatchingUpdateDestroyView(mixins.DestroyModelMixin,
+                                generics.UpdateAPIView):
+    pass
