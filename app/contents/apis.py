@@ -1,12 +1,12 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import status, permissions, generics
+from rest_framework import status, permissions, generics, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from contents.models import Contents
 from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
-    PreviewContentsSerializer
+    PreviewContentsSerializer, WatchingCUDSerializer
 from contents.utils import get_top_contents, get_ad_contents, get_preview_video, \
     get_popular_contents
 from members.models import Profile, Watching
@@ -29,7 +29,7 @@ class ContentsRetrieveView(APIView):
         return Response(data)
 
 
-class SelectContentsListAPIView(generics.ListAPIView):
+class ContentsSelectListView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
@@ -63,7 +63,7 @@ class ContentsSelectAPIView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class SearchContentsListAPIView(generics.ListAPIView):
+class ContentsSearchListView(generics.ListAPIView):
     serializer_class = ContentsSerializer
 
     def get_queryset(self):
@@ -123,3 +123,32 @@ class ContentsListView(APIView):
             "watching_video": WatchingSerializer(watching_video_list, many=True).data
         }
         return Response(data)
+
+
+class WatchingCreateView(generics.CreateAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = WatchingCUDSerializer
+    queryset = Watching.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(profile=get_object_or_404(Profile, pk=self.kwargs.get('profile_pk')))
+
+
+class WatchingUpdateDestroyView(mixins.DestroyModelMixin,
+                                mixins.UpdateModelMixin,
+                                generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = WatchingCUDSerializer
+
+    def get_queryset(self):
+        profile_pk = self.kwargs.get('profile_pk')
+        return Watching.objects.filter(profile__pk=profile_pk)
+
+    def perform_update(self, serializer):
+        serializer.save(profile=get_object_or_404(Profile, pk=self.kwargs.get('profile_pk')))
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

@@ -98,6 +98,6 @@ class Watching(models.Model):
     profile = models.ForeignKey('members.Profile',
                                 on_delete=models.CASCADE,
                                 verbose_name='프로필',
-                                related_name='watcing')
+                                related_name='watching')
     playtime = models.PositiveIntegerField('재생시간')
     video_length = models.PositiveIntegerField('비디오 길이')
