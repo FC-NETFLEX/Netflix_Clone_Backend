@@ -20,7 +20,9 @@ DOCKER_OPTIONS = [
     ('-it', ''),
     ('-d', ''),
     ('-p', '80:80'),
+    ('-p', '443:443'),
     ('--name', 'netflex_container'),
+    ('-v', '/etc/letsencrypt:/etc/letsencrypt'),
 ]
 
 
