@@ -115,7 +115,7 @@ class ContentsListView(APIView):
 
         data = {
             "top_contents": ContentsDetailSerializer(top_contents, context={'profile_pk': profile_pk}).data,
-            "ad_contents": ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk}),
+            "ad_contents": ContentsDetailSerializer(ad_contents, context={'profile_pk': profile_pk}).data,
             "top10_contents": ContentsSerializer(top10_contents_list, many=True).data,
             "recommend_contents": ContentsSerializer(recommend_contents_list, many=True).data,
             "preview_contents": PreviewContentsSerializer(preview_contents_list, many=True).data,
