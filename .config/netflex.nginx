@@ -1,13 +1,32 @@
 server{
     listen 80;
-    server_name 13.124.222.31
+    server_name netflexx.ga www.netflexx.ga;
     charset utf-8;
 
     location / {
-        proxy_pass http://unix:/run/netflex.sock;
+        return 301 https://$host$request_uri;
     }
 
+    location /.well-known/acme-challenge/ {
+        alias   /srv/Netflex_Clone_Backend/.cert/;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name netflexx.ga www.netflexx.ga;
+    charset urf-8;
+
+    ssl on;
+    ssl_certificate     /etc/letsencrypt/live/netflexx.ga/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/netflexx.ga/privkey.pem;
+
     location /static/ {
-        alias   /srv/Netflex_Clone_Backend/.static/;
+        alias           /srv/Netflex_Clone_Backend/.static/;
+    }
+
+    location / {
+        include    /etc/nginx/proxy_params;
+        proxy_pass http://unix:/run/netflex.sock;
     }
 }
