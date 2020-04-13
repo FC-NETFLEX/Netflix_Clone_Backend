@@ -44,6 +44,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRETS['DJANGO_SECRET_KEY']
+APPEND_SLASH = False
 
 ALLOWED_HOSTS = []
 

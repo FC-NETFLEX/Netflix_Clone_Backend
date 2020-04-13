@@ -83,7 +83,7 @@ class ContentsSearchListView(generics.ListAPIView):
             contents_list = None
         elif contents_count < 21:
             extra_contents_list = get_popular_contents(queryset, count=21 - contents_count)
-            contents_list = contents_list.union(extra_contents_list)
+            contents_list = list(contents_list) + list(extra_contents_list)
         elif contents_count > 21:
             contents_list = contents_list[:21]
 
