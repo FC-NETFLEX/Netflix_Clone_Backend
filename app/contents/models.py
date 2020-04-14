@@ -77,7 +77,7 @@ class Category(models.Model):
                                       verbose_name='카테고리')
 
     def __str__(self):
-        return self.category_name
+        return self.get_category_name_display()
 
 
 class Actor(models.Model):
