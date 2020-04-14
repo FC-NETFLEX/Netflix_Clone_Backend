@@ -21,6 +21,4 @@ sentry_sdk.init(
 )
 
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
-# STATICFILES_DIRS = [
-#     STATIC_ROOT
-# ]
+
