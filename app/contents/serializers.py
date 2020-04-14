@@ -84,11 +84,15 @@ class WatchingCUDSerializer(serializers.ModelSerializer):
 
 
 class PreviewContentsSerializer(serializers.ModelSerializer):
+    videos = VideoSerializer(many=True)
+
     class Meta:
         model = Contents
         fields = [
             'id',
             'contents_title',
             'preview_video',
-            'contents_logo'
+            'contents_logo',
+            'contents_image',
+            'videos',
         ]
