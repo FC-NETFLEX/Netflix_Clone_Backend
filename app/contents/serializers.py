@@ -16,6 +16,7 @@ class VideoSerializer(serializers.ModelSerializer):
 class ContentsDetailSerializer(serializers.ModelSerializer):
     actors = serializers.StringRelatedField(many=True, read_only=True)
     directors = serializers.StringRelatedField(many=True, read_only=True)
+    categories = serializers.StringRelatedField(many=True, read_only=True)
     videos = VideoSerializer(many=True)
     is_select = serializers.SerializerMethodField()
     is_like = serializers.SerializerMethodField()
@@ -33,6 +34,7 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
             'contents_length',
             'contents_pub_year',
             'preview_video',
+            'categories',
             'actors',
             'directors',
             'videos',
