@@ -93,5 +93,6 @@ class PreviewContentsSerializer(serializers.ModelSerializer):
             'contents_title',
             'preview_video',
             'contents_logo',
+            'contents_image',
             'videos',
         ]
