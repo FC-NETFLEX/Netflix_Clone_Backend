@@ -70,8 +70,13 @@ def copy_server():
     ssh_run(f'sudo docker cp /tmp/credentials netflex_container:/root/.aws/')
 
 
+def migration():
+    ssh_run(f'sudo docker exec netflex_container python /srv/Netflex_Clone_Backend/app/manage.py migrate --settings=config.settings.production')
+
+
 def collect_static():
-    ssh_run(f'sudo docker exec netflex_container python /srv/Netflex_Clone_Backend/app/manage.py collectstatic --settings=config.settings.production')
+    ssh_run(
+        f'sudo docker exec netflex_container python /srv/Netflex_Clone_Backend/app/manage.py collectstatic --settings=config.settings.production')
 
 
 def server_cmd():
@@ -87,6 +92,7 @@ if __name__ == '__main__':
         server_pull_run()
         copy_server()
         collect_static()
+        # migration()
         server_cmd()
     except subprocess.CalledProcessError as e:
         print('docker-deploy-error')
