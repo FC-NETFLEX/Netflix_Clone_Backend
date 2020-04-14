@@ -1,13 +1,16 @@
 #!/usr/bin/env python
+import getpass
+import os
 import subprocess
 from pathlib import Path
-import os
 
 IP = "13.124.222.31"
 HOST = "ubuntu"
 TARGET = f'{HOST}@{IP}'  # ubuntu@15.165.204.55
 HOME = str(Path.home())  # "/Users/hongbeen"
-SSH_KEY = os.path.join(HOME, '.ssh', 'pb_nexflex.pem')
+KEY_NAME = 'nexplex.pem' if getpass.getuser() == 'hby' else 'pb_nexflex.pem'
+SSH_KEY = os.path.join(HOME, '.ssh', KEY_NAME)
+
 PROJECT_FILE = os.path.join(HOME, 'projects', 'wps12th', 'Netflex_Clone_Backend')
 DOCKER_IMAGE_TAG = "fcnetflex/fc-netflex"
 SECRETS = os.path.join(HOME, ".aws", "credentials")
@@ -17,7 +20,9 @@ DOCKER_OPTIONS = [
     ('-it', ''),
     ('-d', ''),
     ('-p', '80:80'),
+    ('-p', '443:443'),
     ('--name', 'netflex_container'),
+    ('-v', '/etc/letsencrypt:/etc/letsencrypt'),
 ]
 
 
@@ -65,6 +70,10 @@ def copy_server():
     ssh_run(f'sudo docker cp /tmp/credentials netflex_container:/root/.aws/')
 
 
+def collect_static():
+    ssh_run(f'sudo docker exec netflex_container python /srv/Netflex_Clone_Backend/app/manage.py collectstatic --settings=config.settings.production')
+
+
 def server_cmd():
     # ssh_run(f'sudo docker exec netflex_container /user/sbin/nginx -s stop', ignore_error=True)
     # ssh_run(f'sudo docker exec netflex_container python manage.py collectstatic --noinput')
@@ -77,6 +86,7 @@ if __name__ == '__main__':
         server_init()
         server_pull_run()
         copy_server()
+        collect_static()
         server_cmd()
     except subprocess.CalledProcessError as e:
         print('docker-deploy-error')

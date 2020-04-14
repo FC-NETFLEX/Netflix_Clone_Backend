@@ -2,3 +2,7 @@
 /poetry.lock
 /pyproject.toml
 /.gitignore
+/app/notebook_test
+/.coveragerc
+/.coverage
+/.pytest_cache
