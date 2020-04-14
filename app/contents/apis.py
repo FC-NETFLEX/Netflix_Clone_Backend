@@ -119,8 +119,7 @@ class ContentsListView(APIView):
             "top10_contents": ContentsSerializer(top10_contents_list, many=True).data,
             "recommend_contents": ContentsSerializer(recommend_contents_list, many=True).data,
             "preview_contents": PreviewContentsSerializer(preview_contents_list, many=True).data,
-            "all_contents": ContentsSerializer(all_contents_list, many=True).data,
-            "watching_video": WatchingSerializer(watching_video_list, many=True).data
+            "watching_video": WatchingSerializer(watching_video_list, many=True).data,
         }
         return Response(data)
 
