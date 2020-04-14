@@ -18,3 +18,5 @@ INTERNAL_IPS = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.develop.application'
+
+DATABASES = SECRETS['DATABASES_DEV']

@@ -17,7 +17,7 @@ def get_ad_contents(queryset):
 
 
 def get_top_contents(queryset):
-    contents_list = queryset.filter(contents_pub_year__gte='2010')
+    contents_list = queryset.filter(contents_pub_year__gte='2010', contents_logo__isnull=False)
     max_int = contents_list.count() - 1
     if max_int < 0:
         return
