@@ -31,16 +31,7 @@ class AuthTokenAPIView(APIView):
         return Response(data)
 
 
-# 로그아웃하면 서버에서 삭제
-# 로그아웃
-class UserLogoutAPIView(APIView):
-
-    def get(self, request):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
-
-
-# 회원가입
+# 회원가
 class CreateUserView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = UserCreateSerializer

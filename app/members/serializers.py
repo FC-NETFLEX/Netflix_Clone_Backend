@@ -58,3 +58,5 @@ class ProfileCreateUpdateSerializer(serializers.ModelSerializer):
                   'profile_name',
                   'profile_icon',
                   'is_kids']
+
+
