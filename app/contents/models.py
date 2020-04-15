@@ -6,7 +6,7 @@ class Contents(models.Model):
     contents_title_english = models.CharField(max_length=150, blank=True)
     contents_summary = models.TextField(blank=True)
     contents_image = models.ImageField(upload_to='contents/image/', blank=True)
-    contents_logo = models.ImageField(upload_to='contents/logo/', blank=True)
+    contents_logo = models.ImageField(upload_to='contents/logo/', null=True)
     contents_rating = models.CharField(max_length=64)
     contents_length = models.CharField(max_length=64)
     contents_pub_year = models.CharField(max_length=8)

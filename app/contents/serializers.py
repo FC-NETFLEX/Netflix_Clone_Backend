@@ -63,15 +63,25 @@ class ContentsSerializer(serializers.ModelSerializer):
 
 class WatchingSerializer(serializers.ModelSerializer):
     video = VideoSerializer(read_only=True)
+    contents_image = serializers.SerializerMethodField()
+    contents_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Watching
         fields = [
             'id',
             'video',
+            'contents_id',
+            'contents_image',
             'playtime',
             'video_length'
         ]
+
+    def get_contents_image(self, instance):
+        return instance.video.contents.contents_image.url
+
+    def get_contents_id(self, instance):
+        return instance.video.contents.id
 
 
 class WatchingCUDSerializer(serializers.ModelSerializer):
