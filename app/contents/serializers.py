@@ -13,54 +13,6 @@ class VideoSerializer(serializers.ModelSerializer):
         ]
 
 
-class ContentsDetailSerializer(serializers.ModelSerializer):
-    actors = serializers.StringRelatedField(many=True, read_only=True)
-    directors = serializers.StringRelatedField(many=True, read_only=True)
-    categories = serializers.StringRelatedField(many=True, read_only=True)
-    videos = VideoSerializer(many=True)
-    is_select = serializers.SerializerMethodField()
-    is_like = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Contents
-        fields = [
-            'id',
-            'contents_title',
-            'contents_title_english',
-            'contents_summary',
-            'contents_image',
-            'contents_logo',
-            'contents_rating',
-            'contents_length',
-            'contents_pub_year',
-            'preview_video',
-            'categories',
-            'actors',
-            'directors',
-            'videos',
-            'is_select',
-            'is_like'
-        ]
-
-    def get_is_select(self, instance):
-        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
-        return True if profile in instance.select_profiles.all() else False
-
-    def get_is_like(self, instance):
-        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
-        return True if profile in instance.like_profiles.all() else False
-
-
-class ContentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contents
-        fields = [
-            'id',
-            'contents_title',
-            'contents_image',
-        ]
-
-
 class WatchingSerializer(serializers.ModelSerializer):
     video = VideoSerializer(read_only=True)
     contents_image = serializers.SerializerMethodField()
@@ -92,6 +44,64 @@ class WatchingCUDSerializer(serializers.ModelSerializer):
             'video',
             'playtime',
             'video_length',
+        ]
+
+
+class ContentsDetailSerializer(serializers.ModelSerializer):
+    actors = serializers.StringRelatedField(many=True, read_only=True)
+    directors = serializers.StringRelatedField(many=True, read_only=True)
+    categories = serializers.StringRelatedField(many=True, read_only=True)
+    videos = VideoSerializer(many=True)
+    is_select = serializers.SerializerMethodField()
+    is_like = serializers.SerializerMethodField()
+    watching = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Contents
+        fields = [
+            'id',
+            'contents_title',
+            'contents_title_english',
+            'contents_summary',
+            'contents_image',
+            'contents_logo',
+            'contents_rating',
+            'contents_length',
+            'contents_pub_year',
+            'preview_video',
+            'categories',
+            'actors',
+            'directors',
+            'videos',
+            'is_select',
+            'is_like',
+            'watching',
+        ]
+
+    def get_is_select(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        return True if profile in instance.select_profiles.all() else False
+
+    def get_is_like(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        return True if profile in instance.like_profiles.all() else False
+
+    def get_watching(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        try:
+            watching = Watching.objects.get(profile=profile, video=instance.videos.first())
+            return WatchingCUDSerializer(watching).data
+        except Watching.DoesNotExist:
+            return None
+
+
+class ContentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contents
+        fields = [
+            'id',
+            'contents_title',
+            'contents_image',
         ]
 
 
