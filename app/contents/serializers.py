@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from contents.models import Contents, Video
+from contents.models import Contents, Video, Category
 from members.models import Watching, Profile
 
 
@@ -117,4 +117,15 @@ class PreviewContentsSerializer(serializers.ModelSerializer):
             'contents_logo',
             'contents_image',
             'videos',
+        ]
+
+
+class CategoryContentsSerializer(serializers.ModelSerializer):
+    contents = ContentsSerializer(many=True)
+
+    class Meta:
+        model = Category
+        fields = [
+            'category_name',
+            'contents',
         ]
