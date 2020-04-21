@@ -24,7 +24,6 @@ pytest = "^5.4.1"
 pytest-django = "^3.8.0"
 codecov = "^2.0.22"
 pytest-cov = "^2.8.1"
-model_bakery = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 notebook = "^6.0.3"
