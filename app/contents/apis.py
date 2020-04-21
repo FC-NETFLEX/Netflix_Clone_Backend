@@ -4,9 +4,9 @@ from rest_framework import status, permissions, generics, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from contents.models import Contents
+from contents.models import Contents, Category
 from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
-    PreviewContentsSerializer, WatchingCUDSerializer
+    PreviewContentsSerializer, WatchingCUDSerializer, CategoryContentsSerializer
 from contents.utils import get_top_contents, get_ad_contents, get_preview_video, \
     get_popular_contents
 from members.models import Profile, Watching
@@ -151,3 +151,9 @@ class WatchingUpdateDestroyView(mixins.DestroyModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class CategoryListView(generics.ListAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = CategoryContentsSerializer
+    queryset = Category.objects.all()
