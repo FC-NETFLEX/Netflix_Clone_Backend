@@ -101,3 +101,6 @@ class Watching(models.Model):
                                 related_name='watching')
     playtime = models.PositiveIntegerField('재생시간')
     video_length = models.PositiveIntegerField('비디오 길이')
+
+    class Meta:
+        unique_together = ('video', 'profile')
