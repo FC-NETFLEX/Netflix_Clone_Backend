@@ -18,7 +18,13 @@ class ContentsRetrieveView(APIView):
         contents = get_object_or_404(Contents, pk=contents_pk)
         serializer_contents = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
         similar_contents = Contents.objects.filter(categories__in=contents.categories.all()).random(6)
+        not_serializer_content = Contents.objects.filter(categories__in=contents.categories.all()).random(1)
         serializer_similar_contents = ContentsSerializer(similar_contents, many=True)
+        while True:
+            if serializer_similar_contents in serializer_contents:
+                serializer_contents = not_serializer_content
+            else:
+                break
 
         data = {
             'contents': serializer_contents.data,
