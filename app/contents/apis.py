@@ -1,12 +1,13 @@
+
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions, generics, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from contents.models import Contents
+from contents.models import Contents, Category
 from contents.serializers import ContentsDetailSerializer, ContentsSerializer, WatchingSerializer, \
-    PreviewContentsSerializer, WatchingCUDSerializer
+    PreviewContentsSerializer, WatchingCUDSerializer, CategoryContentsSerializer
 from contents.utils import get_top_contents, get_ad_contents, get_preview_video, \
     get_popular_contents
 from members.models import Profile, Watching
@@ -16,9 +17,7 @@ class ContentsRetrieveView(APIView):
     def get(self, request, profile_pk, contents_pk):
         contents = get_object_or_404(Contents, pk=contents_pk)
         serializer_contents = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
-        similar_contents = Contents.objects.filter(categories__in=contents.categories.all())[:6]
-        if similar_contents.count() < 6:
-            similar_contents = similar_contents[:3]
+        similar_contents = Contents.objects.filter(categories__in=contents.categories.all()).random(6)
         serializer_similar_contents = ContentsSerializer(similar_contents, many=True)
 
         data = {
@@ -151,3 +150,9 @@ class WatchingUpdateDestroyView(mixins.DestroyModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class CategoryListView(generics.ListAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = CategoryContentsSerializer
+    queryset = Category.objects.all()

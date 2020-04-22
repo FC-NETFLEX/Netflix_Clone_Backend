@@ -1,12 +1,14 @@
 from django.db import models
+from django_random_queryset import RandomManager
 
 
 class Contents(models.Model):
+    objects = RandomManager()
     contents_title = models.CharField(max_length=150)
     contents_title_english = models.CharField(max_length=150, blank=True)
     contents_summary = models.TextField(blank=True)
     contents_image = models.ImageField(upload_to='contents/image/', blank=True)
-    contents_logo = models.ImageField(upload_to='contents/logo/', blank=True)
+    contents_logo = models.ImageField(upload_to='contents/logo/', null=True)
     contents_rating = models.CharField(max_length=64)
     contents_length = models.CharField(max_length=64)
     contents_pub_year = models.CharField(max_length=8)
@@ -41,13 +43,43 @@ class Video(models.Model):
 
 
 class Category(models.Model):
-    category_name = models.CharField(max_length=150)
+    CATEGORY_CHOICE = (
+        ('1', '드라마'),
+        ('2', '판타지'),
+        ('3', '서부'),
+        ('4', '공포'),
+        ('5', '로맨스'),
+        ('6', '모험'),
+        ('7', '스릴러'),
+        ('8', '느와르'),
+        ('9', '컬트'),
+        ('10', '다큐멘터리'),
+        ('11', '코미디'),
+        ('12', '가족'),
+        ('13', '미스터리'),
+        ('14', '전쟁'),
+        ('15', '애니메이션'),
+        ('16', '범죄'),
+        ('17', '뮤지컬'),
+        ('18', 'SF'),
+        ('19', '액션'),
+        ('20', '무협'),
+        ('21', '에로'),
+        ('22', '서스펜스'),
+        ('23', '서사'),
+        ('24', '블랙코미디'),
+        ('25', '실험'),
+        ('26', '영화카툰'),
+        ('27', '영화음악'),
+        ('28', '영화패러디포스터')
+    )
+    category_name = models.CharField(max_length=150, choices=CATEGORY_CHOICE)
     contents = models.ManyToManyField('contents.Contents',
                                       related_name='categories',
                                       verbose_name='카테고리')
 
     def __str__(self):
-        return self.category_name
+        return self.get_category_name_display()
 
 
 class Actor(models.Model):
