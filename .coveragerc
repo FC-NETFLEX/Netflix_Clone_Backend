@@ -6,6 +6,8 @@ omit =
     app/manage.py
     app/config/wsgi/*
     app/*/migrations/*
+    app/*/views.py
+    app/conftest.py
 
 [report]
 exclude_lines =

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from contents.models import Contents, Video
+from contents.models import Contents, Video, Category
 from members.models import Watching, Profile
 
 
@@ -13,12 +13,48 @@ class VideoSerializer(serializers.ModelSerializer):
         ]
 
 
+class WatchingSerializer(serializers.ModelSerializer):
+    video = VideoSerializer(read_only=True)
+    contents_image = serializers.SerializerMethodField()
+    contents_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Watching
+        fields = [
+            'id',
+            'video',
+            'contents_id',
+            'contents_image',
+            'playtime',
+            'video_length'
+        ]
+
+    def get_contents_image(self, instance):
+        return instance.video.contents.contents_image.url
+
+    def get_contents_id(self, instance):
+        return instance.video.contents.id
+
+
+class WatchingCUDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Watching
+        fields = [
+            'id',
+            'video',
+            'playtime',
+            'video_length',
+        ]
+
+
 class ContentsDetailSerializer(serializers.ModelSerializer):
     actors = serializers.StringRelatedField(many=True, read_only=True)
     directors = serializers.StringRelatedField(many=True, read_only=True)
+    categories = serializers.StringRelatedField(many=True, read_only=True)
     videos = VideoSerializer(many=True)
     is_select = serializers.SerializerMethodField()
     is_like = serializers.SerializerMethodField()
+    watching = serializers.SerializerMethodField()
 
     class Meta:
         model = Contents
@@ -33,11 +69,13 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
             'contents_length',
             'contents_pub_year',
             'preview_video',
+            'categories',
             'actors',
             'directors',
             'videos',
             'is_select',
-            'is_like'
+            'is_like',
+            'watching',
         ]
 
     def get_is_select(self, instance):
@@ -48,6 +86,14 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
         profile = Profile.objects.get(pk=self.context.get('profile_pk'))
         return True if profile in instance.like_profiles.all() else False
 
+    def get_watching(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        try:
+            watching = Watching.objects.get(profile=profile, video=instance.videos.first())
+            return WatchingCUDSerializer(watching).data
+        except Watching.DoesNotExist:
+            return None
+
 
 class ContentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,30 +102,6 @@ class ContentsSerializer(serializers.ModelSerializer):
             'id',
             'contents_title',
             'contents_image',
-        ]
-
-
-class WatchingSerializer(serializers.ModelSerializer):
-    video = VideoSerializer(read_only=True)
-
-    class Meta:
-        model = Watching
-        fields = [
-            'id',
-            'video',
-            'playtime',
-            'video_length'
-        ]
-
-
-class WatchingCUDSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Watching
-        fields = [
-            'id',
-            'video',
-            'playtime',
-            'video_length',
         ]
 
 
@@ -95,4 +117,15 @@ class PreviewContentsSerializer(serializers.ModelSerializer):
             'contents_logo',
             'contents_image',
             'videos',
+        ]
+
+
+class CategoryContentsSerializer(serializers.ModelSerializer):
+    contents = ContentsSerializer(many=True)
+
+    class Meta:
+        model = Category
+        fields = [
+            'category_name',
+            'contents',
         ]
