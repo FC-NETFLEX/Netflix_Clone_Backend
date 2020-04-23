@@ -107,6 +107,7 @@ class ContentsSerializer(serializers.ModelSerializer):
 
 class PreviewContentsSerializer(serializers.ModelSerializer):
     videos = VideoSerializer(many=True)
+    categories = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Contents
@@ -116,6 +117,7 @@ class PreviewContentsSerializer(serializers.ModelSerializer):
             'preview_video',
             'contents_logo',
             'contents_image',
+            'categories',
             'videos',
         ]
 
