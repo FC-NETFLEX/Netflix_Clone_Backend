@@ -1,5 +1,4 @@
 from django.db import models
-from django_random_queryset import RandomManager
 
 
 class Contents(models.Model):
