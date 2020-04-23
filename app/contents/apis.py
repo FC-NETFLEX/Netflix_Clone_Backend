@@ -1,4 +1,3 @@
-
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions, generics, mixins
@@ -17,15 +16,9 @@ class ContentsRetrieveView(APIView):
     def get(self, request, profile_pk, contents_pk):
         contents = get_object_or_404(Contents, pk=contents_pk)
         serializer_contents = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
-        similar_contents = Contents.objects.filter(categories__in=contents.categories.all()).random(6)
-        not_serializer_content = Contents.objects.filter(categories__in=contents.categories.all()).random(1)
+        similar_contents = Contents.objects.filter(Q(categories__in=contents.categories.all()),
+                                                   ~Q(contents_title=contents.contents_title)).order_by('?')[:6]
         serializer_similar_contents = ContentsSerializer(similar_contents, many=True)
-        while True:
-            if serializer_similar_contents in serializer_contents:
-                serializer_contents = not_serializer_content
-            else:
-                break
-
         data = {
             'contents': serializer_contents.data,
             'similar_contents': serializer_similar_contents.data

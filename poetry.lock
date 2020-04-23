@@ -236,17 +236,6 @@ six = ">=1.2"
 
 [[package]]
 category = "main"
-description = "Pull random records using Django ORM."
-name = "django-random-queryset"
-optional = false
-python-versions = "*"
-version = "0.1.3"
-
-[package.dependencies]
-django = ">=1.11"
-
-[[package]]
-category = "main"
 description = "Support for many storage backends in Django"
 name = "django-storages"
 optional = false
@@ -1104,7 +1093,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "a456c3747121d8c6000a608d1ad79aa3469dd6246201d97cc12022a6c5599333"
+content-hash = "ebb8ca0e8d79cac4cf0aa82b567a4c27a40c8e8f43f29ac982e2c182f1e00730"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1220,9 +1209,6 @@ django-debug-toolbar = [
 django-extensions = [
     {file = "django-extensions-2.2.9.tar.gz", hash = "sha256:2f81b618ba4d1b0e58603e25012e5c74f88a4b706e0022a3b21f24f0322a6ce6"},
     {file = "django_extensions-2.2.9-py2.py3-none-any.whl", hash = "sha256:b19182d101a441fe001c5753553a901e2ef3ff60e8fbbe38881eb4a61fdd17c4"},
-]
-django-random-queryset = [
-    {file = "django-random-queryset-0.1.3.tar.gz", hash = "sha256:800be1e29efd7852bddef9de9f3419b2f93336f2a4a669694124bb3491ccd4fd"},
 ]
 django-storages = [
     {file = "django-storages-1.9.1.tar.gz", hash = "sha256:a59e9923cbce7068792f75344ed7727021ee4ac20f227cf17297d0d03d141e91"},
