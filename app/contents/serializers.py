@@ -108,6 +108,7 @@ class ContentsSerializer(serializers.ModelSerializer):
 class PreviewContentsSerializer(serializers.ModelSerializer):
     videos = VideoSerializer(many=True)
     categories = serializers.StringRelatedField(many=True, read_only=True)
+    is_select = serializers.SerializerMethodField()
 
     class Meta:
         model = Contents
@@ -118,8 +119,13 @@ class PreviewContentsSerializer(serializers.ModelSerializer):
             'contents_logo',
             'contents_image',
             'categories',
+            'is_select',
             'videos',
         ]
+
+    def get_is_select(self, instance):
+        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        return True if profile in instance.select_profiles.all() else False
 
 
 class CategoryContentsSerializer(serializers.ModelSerializer):
