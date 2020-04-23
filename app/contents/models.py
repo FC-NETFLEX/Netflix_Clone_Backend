@@ -3,7 +3,6 @@ from django_random_queryset import RandomManager
 
 
 class Contents(models.Model):
-    objects = RandomManager()
     contents_title = models.CharField(max_length=150)
     contents_title_english = models.CharField(max_length=150, blank=True)
     contents_summary = models.TextField(blank=True)
