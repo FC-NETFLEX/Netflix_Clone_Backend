@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from members.models import User, Profile, ProfileIconCategory
 from members.serializers import UserCreateSerializer, ProfileSerializer, \
-    ProfileCreateUpdateSerializer, ProfileIconListSerializer
+    ProfileCreateUpdateSerializer, ProfileIconCategorySerializer
 
 
 # 로그인
@@ -75,5 +75,5 @@ class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 # profile icon 선택 창에 icon list를 보여줌
 class ProfileIconListView(generics.ListAPIView):
-    serializer_class = ProfileIconListSerializer
+    serializer_class = ProfileIconCategorySerializer
     queryset = ProfileIconCategory.objects.all()
