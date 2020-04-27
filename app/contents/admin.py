@@ -14,7 +14,6 @@ class Videoinline(admin.TabularInline):
     extra = 0
 
 
-
 @admin.register(Contents)
 class ContentsAdmin(admin.ModelAdmin):
     list_display = ['pk', 'contents_title', 'contents_rating', 'preview_video']
@@ -27,7 +26,7 @@ class ContentsAdmin(admin.ModelAdmin):
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['pk']
 
 
 @admin.register(Category)
