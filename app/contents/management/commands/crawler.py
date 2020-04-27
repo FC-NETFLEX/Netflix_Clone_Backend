@@ -69,7 +69,7 @@ def get_item(url):
     except AttributeError:
         return None
     image_thumb_url = soup.select_one('div.poster').find('a').img['src']  # 포스터 url
-    image_url = parse.urlunsplit(parse.urlsplit(image_thumbnail_url)._replace(query=''))
+    image_url = parse.urlunsplit(parse.urlsplit(image_thumb_url)._replace(query=''))
     summary_text = soup.select("div.obj_section > div.video > div.story_area > p.con_tx")
     if summary_text:
         summary = summary_text[0].get_text(strip=True)  # 줄거리
