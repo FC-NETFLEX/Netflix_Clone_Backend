@@ -79,17 +79,17 @@ class ContentsDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_is_select(self, instance):
-        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
-        return True if profile in instance.select_profiles.all() else False
+        profile_pk = self.context.get('profile_pk')
+        return True if profile_pk in instance.select_profiles.all() else False
 
     def get_is_like(self, instance):
-        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
-        return True if profile in instance.like_profiles.all() else False
+        profile_pk = self.context.get('profile_pk')
+        return True if profile_pk in instance.like_profiles.all() else False
 
     def get_watching(self, instance):
-        profile = Profile.objects.get(pk=self.context.get('profile_pk'))
+        profile_pk = self.context.get('profile_pk')
         try:
-            watching = Watching.objects.get(profile=profile, video=instance.videos.first())
+            watching = Watching.objects.get(profile=profile_pk, video=instance.videos.first())
             return WatchingCUDSerializer(watching).data
         except Watching.DoesNotExist:
             return None

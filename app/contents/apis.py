@@ -13,6 +13,10 @@ from members.models import Profile, Watching
 
 
 class ContentsRetrieveView(APIView):
+    """
+    contents 상세 정보 api
+        - url로 보내주는 contents의 상세 정보와, 비슷한 컨텐츠 6개를 선정해서 보내준다.
+    """
     def get(self, request, profile_pk, contents_pk):
         contents = get_object_or_404(Contents, pk=contents_pk)
         serializer_contents = ContentsDetailSerializer(contents, context={'profile_pk': profile_pk})
@@ -80,7 +84,8 @@ class ContentsSearchListView(generics.ListAPIView):
         if contents_count == 0:
             contents_list = None
         elif contents_count < 21:
-            extra_contents_list = get_popular_contents(queryset.exclude(id__in=contents_list), count=21 - contents_count)
+            extra_contents_list = get_popular_contents(queryset.exclude(id__in=contents_list),
+                                                       count=21 - contents_count)
             contents_list = list(contents_list) + list(extra_contents_list)
         elif contents_count > 21:
             contents_list = contents_list[:21]
