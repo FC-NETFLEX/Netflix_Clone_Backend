@@ -4,6 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -21,9 +22,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField('이메일', max_length=128, unique=True)
-    password = models.CharField('비밀번호', max_length=128)
-    created = models.DateTimeField('생성일자', default=timezone.now)
+    email = models.EmailField(_('이메일'), max_length=128, unique=True)
+    password = models.CharField(_('비밀번호'), max_length=128)
+    created = models.DateTimeField(_('생성일자'), default=timezone.now)
 
     objects = UserManager()
 
@@ -35,31 +36,31 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_superuser
 
     def __str__(self):
-        return f'{self.email}'
+        return self.email
 
 
 class ProfileIcon(models.Model):
-    icon_name = models.CharField('아이콘 이름', max_length=128)
-    icon = models.ImageField('아이콘', upload_to='profile/icon/')
+    icon_name = models.CharField(_('아이콘 이름'), max_length=128)
+    icon = models.ImageField(_('아이콘'), upload_to='profile/icon/')
     icon_category = models.ForeignKey('members.ProfileIconCategory',
-                                      verbose_name='아이콘 카테고리',
+                                      verbose_name=_('아이콘 카테고리'),
                                       related_name='profileIcons',
                                       on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'icon'
-        verbose_name_plural = 'icons'
+        verbose_name = _('icon')
+        verbose_name_plural = _('icons')
 
     def __str__(self):
         return self.icon_name
 
 
 class ProfileIconCategory(models.Model):
-    category_name = models.CharField('아이콘 카테고리', max_length=128)
+    category_name = models.CharField(_('아이콘 카테고리'), max_length=128)
 
     class Meta:
-        verbose_name = 'icon category'
-        verbose_name_plural = 'icon categories'
+        verbose_name = _('icon category')
+        verbose_name_plural = _('icon categories')
 
     def __str__(self):
         return self.category_name
@@ -75,32 +76,32 @@ def get_default_icon():
 
 class Profile(models.Model):
     user = models.ForeignKey('members.User',
-                             verbose_name='프로필',
+                             verbose_name=_('프로필'),
                              related_name='profiles',
                              on_delete=models.CASCADE,
                              )
 
-    profile_name = models.CharField('이름', max_length=150)
-    is_kids = models.BooleanField('키즈', default=False)
-    created = models.DateTimeField('생성일자', default=timezone.now)
+    profile_name = models.CharField(_('이름'), max_length=150)
+    is_kids = models.BooleanField(_('키즈'), default=False)
+    created = models.DateTimeField(_('생성일자'), default=timezone.now)
     watching_videos = models.ManyToManyField('contents.Video',
                                              through='members.Watching',
-                                             verbose_name='재생 중인 비디오',
+                                             verbose_name=_('시청 중인 비디오'),
                                              related_name='profiles',
                                              )
 
     select_contents = models.ManyToManyField('contents.Contents',
-                                             verbose_name='찜한 컨텐츠',
+                                             verbose_name=_('찜한 컨텐츠'),
                                              related_name='select_profiles',
                                              )
 
     like_contents = models.ManyToManyField('contents.Contents',
-                                           verbose_name='좋아요',
+                                           verbose_name=_('좋아요'),
                                            related_name='like_profiles',
                                            )
 
     profile_icon = models.ForeignKey('members.ProfileIcon',
-                                     verbose_name='프로필 아이콘',
+                                     verbose_name=_('프로필 아이콘'),
                                      related_name='profiles',
                                      on_delete=models.SET(get_default_icon))
 
@@ -111,18 +112,18 @@ class Profile(models.Model):
 class Watching(models.Model):
     video = models.ForeignKey('contents.Video',
                               on_delete=models.CASCADE,
-                              verbose_name='비디오',
+                              verbose_name=_('비디오'),
                               related_name='watching')
     profile = models.ForeignKey('members.Profile',
                                 on_delete=models.CASCADE,
-                                verbose_name='프로필',
+                                verbose_name=_('프로필'),
                                 related_name='watching')
-    playtime = models.PositiveIntegerField('재생시간')
-    video_length = models.PositiveIntegerField('비디오 길이')
+    playtime = models.PositiveIntegerField(_('재생시간'))
+    video_length = models.PositiveIntegerField(_('비디오 길이'))
 
     class Meta:
-        verbose_name = 'watching'
-        verbose_name_plural = 'watching'
+        verbose_name = _('watching')
+        verbose_name_plural = _('watching')
         constraints = [
             models.UniqueConstraint(fields=['video', 'profile'], name='profile-video')
         ]
