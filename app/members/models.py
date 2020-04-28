@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -36,13 +38,40 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_superuser
 
 
+class ProfileIcon(models.Model):
+    icon_name = models.CharField('아이콘 이름', max_length=128)
+    icon = models.ImageField('아이콘', upload_to='profile/icon/')
+    icon_category = models.ForeignKey('members.ProfileIconCategory',
+                                      verbose_name='아이콘 카테고리',
+                                      related_name='profileIcons',
+                                      on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.icon.url
+
+
+class ProfileIconCategory(models.Model):
+    category_name = models.CharField('아이콘 카테고리', max_length=128)
+
+    def __str__(self):
+        return self.category_name
+
+
+def get_default_icon():
+    """
+        대표 아이콘 중 하나를 랜덤으로 선택해서 return
+    """
+    category = ProfileIconCategory.objects.get(category_name='대표 아이콘')
+    return category.profileIcons.all()[random.randint(0, category.profileIcons.count())]
+
+
 class Profile(models.Model):
     user = models.ForeignKey('members.User',
-                             on_delete=models.CASCADE,
                              verbose_name='프로필',
                              related_name='profiles',
-                             null=True
+                             on_delete=models.CASCADE,
                              )
+
     profile_name = models.CharField('이름', max_length=150)
     is_kids = models.BooleanField('키즈', default=False)
     created = models.DateTimeField('생성일자', default=timezone.now)
@@ -65,29 +94,10 @@ class Profile(models.Model):
     profile_icon = models.ForeignKey('members.ProfileIcon',
                                      verbose_name='프로필 이미지',
                                      related_name='profiles',
-                                     on_delete=models.CASCADE)
+                                     on_delete=models.SET(get_default_icon))
 
     def __str__(self):
         return f'{self.user.email} : {self.profile_name}'
-
-
-class ProfileIcon(models.Model):
-    icon_name = models.CharField('아이콘 이름', max_length=128)
-    icon = models.ImageField('아이콘', upload_to='profile/icon/')
-    icon_category = models.ForeignKey('members.ProfileIconCategory',
-                                      verbose_name='아이콘 카테고리',
-                                      related_name='profileIcons',
-                                      on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.icon.url
-
-
-class ProfileIconCategory(models.Model):
-    category_name = models.CharField('아이콘 카테고리', max_length=128)
-
-    def __str__(self):
-        return self.category_name
 
 
 class Watching(models.Model):
