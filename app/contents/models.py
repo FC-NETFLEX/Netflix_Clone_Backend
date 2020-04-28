@@ -1,43 +1,44 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Contents(models.Model):
-    contents_title = models.CharField(max_length=150)
-    contents_title_english = models.CharField(max_length=150, blank=True)
-    contents_summary = models.TextField(blank=True)
-    contents_image = models.ImageField(upload_to='contents/image/', blank=True)
-    contents_logo = models.ImageField(upload_to='contents/logo/', null=True)
-    contents_rating = models.CharField(max_length=64)
-    contents_length = models.CharField(max_length=64)
-    contents_pub_year = models.CharField(max_length=8)
+    contents_title = models.CharField(_('타이틀'), max_length=150)
+    contents_title_english = models.CharField(_('영어타이틀'), max_length=150, blank=True)
+    contents_summary = models.TextField(_('설명'), blank=True)
+    contents_image = models.ImageField(_('포스터'), upload_to='contents/image/', blank=True)
+    contents_logo = models.ImageField(_('로고'), upload_to='contents/logo/', null=True)
+    contents_rating = models.CharField(_('관람등급'), max_length=64)
+    contents_length = models.CharField(_('영상 길이'), max_length=64)
+    contents_pub_year = models.CharField(_('개봉년도'), max_length=8)
     is_movie = models.BooleanField(default=True)
-    preview_video = models.URLField(null=True)
+    preview_video = models.URLField(_('미리보기 영상'), null=True)
 
     actors = models.ManyToManyField('contents.Actor',
                                     related_name='contents',
-                                    verbose_name='출연 배우')
+                                    verbose_name=_('출연 배우'))
 
     directors = models.ManyToManyField('contents.Director',
                                        related_name='contents',
-                                       verbose_name='감독')
+                                       verbose_name=_('감독'))
 
     class Meta:
-        verbose_name = 'contents'
-        verbose_name_plural = 'contents'
+        verbose_name = _('contents')
+        verbose_name_plural = _('contents')
 
     def __str__(self):
         return self.contents_title
 
 
 class Video(models.Model):
-    video_season = models.CharField(max_length=150, blank=True)
-    video_title = models.CharField(max_length=150)
-    video_summary = models.CharField(max_length=150, blank=True)
-    video_url = models.URLField()
+    video_season = models.CharField(_('시즌'), max_length=150, blank=True)
+    video_title = models.CharField(_('제목'), max_length=150)
+    video_summary = models.CharField(_('요약'), max_length=150, blank=True)
+    video_url = models.URLField(_('url'))
     contents = models.ForeignKey('contents.Contents',
                                  on_delete=models.CASCADE,
                                  related_name='videos',
-                                 verbose_name='컨텐츠',
+                                 verbose_name=_('컨텐츠'),
                                  null=True)
 
     def __str__(self):
@@ -75,28 +76,28 @@ class Category(models.Model):
         ('27', '영화음악'),
         ('28', '영화패러디포스터')
     )
-    category_name = models.CharField(max_length=150, choices=CATEGORY_CHOICE)
+    category_name = models.CharField(_('카테고리 이름'), max_length=150, choices=CATEGORY_CHOICE)
     contents = models.ManyToManyField('contents.Contents',
                                       related_name='categories',
-                                      verbose_name='카테고리')
+                                      verbose_name=_('카테고리'))
 
     class Meta:
-        verbose_name = 'category'
-        verbose_name_plural = 'categories'
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
 
     def __str__(self):
         return self.get_category_name_display()
 
 
 class Actor(models.Model):
-    actor_name = models.CharField(max_length=50)
+    actor_name = models.CharField(_('배우 이름'), max_length=50)
 
     def __str__(self):
         return self.actor_name
 
 
 class Director(models.Model):
-    director_name = models.CharField(max_length=50)
+    director_name = models.CharField(_('감독 이름'), max_length=50)
 
     def __str__(self):
         return self.director_name
