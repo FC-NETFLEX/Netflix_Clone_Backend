@@ -28,7 +28,7 @@ class ProfileIconSerializer(serializers.ModelSerializer):
                   'icon']
 
 
-class ProfileIconListSerializer(serializers.ModelSerializer):
+class ProfileIconCategorySerializer(serializers.ModelSerializer):
     profileIcons = ProfileIconSerializer(many=True)
 
     class Meta:

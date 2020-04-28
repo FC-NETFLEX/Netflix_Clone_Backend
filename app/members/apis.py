@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate
-from rest_framework import status, generics, permissions
+from rest_framework import generics, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import get_object_or_404
@@ -8,11 +8,13 @@ from rest_framework.views import APIView
 
 from members.models import User, Profile, ProfileIconCategory
 from members.serializers import UserCreateSerializer, ProfileSerializer, \
-    ProfileCreateUpdateSerializer, ProfileIconListSerializer
+    ProfileCreateUpdateSerializer, ProfileIconCategorySerializer
 
 
-# 로그인
 class AuthTokenAPIView(APIView):
+    """
+        사용자가 인증되면 token 값을 보내주는 api
+    """
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -25,14 +27,13 @@ class AuthTokenAPIView(APIView):
         else:
             raise AuthenticationFailed()
 
-        data = {
-            'token': token.key
-        }
-        return Response(data)
+        return Response({'token': token.key})
 
 
-# 회원가
-class CreateUserView(generics.CreateAPIView):
+class UserCreateView(generics.CreateAPIView):
+    """
+    User를 생성하는 api
+    """
     permission_classes = [permissions.AllowAny]
     serializer_class = UserCreateSerializer
     queryset = User.objects.all()
@@ -42,12 +43,13 @@ class CreateUserView(generics.CreateAPIView):
         Token.objects.create(user=user)
 
 
-# profile 생성, profile list 처리
 class ProfileListCreateView(generics.ListCreateAPIView):
+    """
+    Profile list 를 요청하거나, Profile 생성하는 api
+    """
 
     def get_queryset(self):
-        user = self.request.user
-        return Profile.objects.filter(user=user).order_by('pk')
+        return Profile.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -59,6 +61,9 @@ class ProfileListCreateView(generics.ListCreateAPIView):
 
 
 class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Profile 상세정보, 수정, 삭제 api
+    """
     queryset = Profile.objects.all()
     serializer_class = ProfileCreateUpdateSerializer
 
@@ -73,7 +78,10 @@ class ProfileRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         super().perform_destroy(instance)
 
 
-# profile icon 선택 창에 icon list를 보여줌
 class ProfileIconListView(generics.ListAPIView):
-    serializer_class = ProfileIconListSerializer
+    """
+    profile icon의 리스트를 보여주는 api
+        - profile category 별로 보여준다.
+    """
+    serializer_class = ProfileIconCategorySerializer
     queryset = ProfileIconCategory.objects.all()

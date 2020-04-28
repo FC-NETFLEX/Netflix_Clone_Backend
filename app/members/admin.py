@@ -17,16 +17,22 @@ class ProfileAdmin(admin.ModelAdmin):
     fields = ('user', 'profile_name', 'is_kids', 'profile_icon')
 
 
+class ProfileIconInline(admin.TabularInline):
+    model = ProfileIcon
+    fields = ('icon_name', 'icon')
+
+
 @admin.register(ProfileIcon)
 class ProfileIconAdmin(admin.ModelAdmin):
     fields = ('icon', 'icon_name', 'icon_category')
-
     list_display = ('icon', 'icon_name', 'icon_category')
 
 
 @admin.register(ProfileIconCategory)
 class ProfileIconCategoryAdmin(admin.ModelAdmin):
-    pass
+    inlines = [
+        ProfileIconInline,
+    ]
 
 
 @admin.register(Watching)
