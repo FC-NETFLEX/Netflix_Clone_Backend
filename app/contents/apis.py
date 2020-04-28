@@ -139,11 +139,11 @@ class ContentsListView(APIView):
     def get(self, request, profile_pk):
         all_contents_list = self.get_queryset(request, profile_pk)
 
-        recommend_contents_list = all_contents_list.filter(contents_pub_year__gte='2018')[:10]
+        recommend_contents_list = all_contents_list.filter(contents_pub_year__gte='2014')[:10]
         top_contents = get_top_contents(all_contents_list)
         ad_contents = get_ad_contents(all_contents_list)
         preview_contents_list = get_preview_video(all_contents_list)
-        top10_contents_list = get_popular_contents(all_contents_list, count=10)
+        top10_contents_list = get_popular_contents(all_contets_pub_year__gnts_list, count=10)
         watching_video_list = Watching.objects.filter(profile__id=profile_pk).order_by('-pk')
 
         data = {
