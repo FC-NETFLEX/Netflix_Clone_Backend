@@ -21,6 +21,10 @@ class Contents(models.Model):
                                        related_name='contents',
                                        verbose_name='감독')
 
+    class Meta:
+        verbose_name = 'contents'
+        verbose_name_plural = 'contents'
+
     def __str__(self):
         return self.contents_title
 
@@ -75,6 +79,10 @@ class Category(models.Model):
     contents = models.ManyToManyField('contents.Contents',
                                       related_name='categories',
                                       verbose_name='카테고리')
+
+    class Meta:
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return self.get_category_name_display()

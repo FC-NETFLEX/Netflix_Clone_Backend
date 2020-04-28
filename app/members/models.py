@@ -30,12 +30,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['password']
 
-    def __str__(self):
-        return f'{self.email}'
-
     @property
     def is_staff(self):
         return self.is_superuser
+
+    def __str__(self):
+        return f'{self.email}'
 
 
 class ProfileIcon(models.Model):
@@ -46,12 +46,20 @@ class ProfileIcon(models.Model):
                                       related_name='profileIcons',
                                       on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = 'icon'
+        verbose_name_plural = 'icons'
+
     def __str__(self):
-        return self.icon.url
+        return self.icon_name
 
 
 class ProfileIconCategory(models.Model):
     category_name = models.CharField('아이콘 카테고리', max_length=128)
+
+    class Meta:
+        verbose_name = 'icon category'
+        verbose_name_plural = 'icon categories'
 
     def __str__(self):
         return self.category_name
@@ -87,12 +95,12 @@ class Profile(models.Model):
                                              )
 
     like_contents = models.ManyToManyField('contents.Contents',
-                                           verbose_name='평가한 컨텐츠',
+                                           verbose_name='좋아요',
                                            related_name='like_profiles',
                                            )
 
     profile_icon = models.ForeignKey('members.ProfileIcon',
-                                     verbose_name='프로필 이미지',
+                                     verbose_name='프로필 아이콘',
                                      related_name='profiles',
                                      on_delete=models.SET(get_default_icon))
 
@@ -113,4 +121,11 @@ class Watching(models.Model):
     video_length = models.PositiveIntegerField('비디오 길이')
 
     class Meta:
-        unique_together = ('video', 'profile')
+        verbose_name = 'watching'
+        verbose_name_plural = 'watching'
+        constraints = [
+            models.UniqueConstraint(fields=['video', 'profile'], name='profile-video')
+        ]
+
+    def __str__(self):
+        return f'{self.video.pk}, {self.profile.profile_name}'

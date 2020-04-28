@@ -109,7 +109,7 @@ class ContentsListView(APIView):
         ad_contents = get_ad_contents(all_contents_list)
         preview_contents_list = get_preview_video(all_contents_list)
         top10_contents_list = get_popular_contents(all_contents_list, count=10)
-        watching_video_list = Watching.objects.filter(profile__id=profile_pk)
+        watching_video_list = Watching.objects.filter(profile__id=profile_pk).order_by('-pk')
 
         data = {
             "top_contents": ContentsDetailSerializer(top_contents, context={'profile_pk': profile_pk}).data,
