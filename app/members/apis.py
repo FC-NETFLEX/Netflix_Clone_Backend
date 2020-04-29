@@ -49,7 +49,7 @@ class ProfileListCreateView(generics.ListCreateAPIView):
     """
 
     def get_queryset(self):
-        return Profile.objects.filter(user=self.request.user)
+        return Profile.objects.filter(user=self.request.user).order_by('pk')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
