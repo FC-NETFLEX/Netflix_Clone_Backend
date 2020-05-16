@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/hbyyy/Netflix_Clone_Backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/hbyyy/Netflix_Clone_Backend)
+[![codecov](https://codecov.io/gh/FC-NETFLEX/Netflix_Clone_Backend/branch/master/graph/badge.svg)](https://codecov.io/gh/FC-NETFLEX/Netflix_Clone_Backend)![Netflex CI](https://github.com/FC-NETFLEX/Netflix_Clone_Backend/workflows/Netflex%20CI/badge.svg?branch=master)
 
 # NetFlex - Netflix Clone Project
 
