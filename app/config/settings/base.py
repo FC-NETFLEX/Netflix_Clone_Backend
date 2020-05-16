@@ -16,12 +16,19 @@ import boto3
 
 # sentry 설정
 
+# github action 에서 환경변수로 aws key 사용하도록 수정
+try:
+    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    session = boto3.Session(aws_access_key_id=AWS_ACCESS_KEY_ID,
+                            aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+except KeyError:
+    session = boto3.Session(profile_name="netflex-secrets-manager")
 
-session = boto3.Session(profile_name="netflex-secrets-manager")
 secretsManager = session.client(
-    service_name='secretsmanager',
-    region_name='ap-northeast-2'
-)
+        service_name='secretsmanager',
+        region_name='ap-northeast-2'
+    )
 
 SECRETS = json.loads(secretsManager.get_secret_value(SecretId='netflex')["SecretString"])['netflex']
 
