@@ -1,6 +1,6 @@
 server{
     listen 80;
-    server_name netflexx.ga www.netflexx.ga;
+    server_name hbyyynetflex.xyz www.hbyyynetflex.xyz;
     charset utf-8;
 
     location / {
@@ -14,12 +14,12 @@ server{
 
 server {
     listen 443 ssl;
-    server_name netflexx.ga www.netflexx.ga;
+    server_name hbyyynetflex.xyz www.hbyyynetflex.xyz;
     charset urf-8;
 
     ssl on;
-    ssl_certificate     /etc/letsencrypt/live/netflexx.ga/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/netflexx.ga/privkey.pem;
+    ssl_certificate     /etc/letsencrypt/live/hbyyynetflex.xyz/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/hbyyynetflex.xyz/privkey.pem;
 
     location /static/ {
         alias           /srv/Netflex_Clone_Backend/.static/;
