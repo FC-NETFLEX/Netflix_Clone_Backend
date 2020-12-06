@@ -13,6 +13,8 @@ Netflex API
 
 ## API Document
 
+> 도메인 변경 (netflexx.ga -> hbyyynetflex.xyz)
+
 https://documenter.getpostman.com/view/9448934/Szf24q2x
 
 

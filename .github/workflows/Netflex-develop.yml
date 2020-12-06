@@ -1,10 +1,10 @@
-name: Netflex CI - master
+name: Netflex CI - develop
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 jobs:
   build:
