@@ -10,6 +10,8 @@ Netflex API
 2. 허범영
 
 
+## Sample clips
+- [링크](https://github.com/FC-NETFLEX/Netflix_Clone_iOS#sample-clips)
 
 ## API Document
 
